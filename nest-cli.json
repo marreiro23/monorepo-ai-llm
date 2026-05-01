@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/monorepo-ai-llm/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/monorepo-ai-llm/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/monorepo-ai-llm",
+  "projects": {
+    "llm-ops-api": {
+      "type": "application",
+      "root": "apps/llm-ops-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/llm-ops-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/llm-ops-api/tsconfig.app.json"
+      }
+    },
+    "monorepo-ai-llm": {
+      "type": "application",
+      "root": "apps/monorepo-ai-llm",
+      "entryFile": "main",
+      "sourceRoot": "apps/monorepo-ai-llm/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/monorepo-ai-llm/tsconfig.app.json"
+      }
+    },
+    "sharepoint-api": {
+      "type": "application",
+      "root": "apps/sharepoint-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/sharepoint-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sharepoint-api/tsconfig.app.json"
+      }
+    },
+    "sync-api": {
+      "type": "application",
+      "root": "apps/sync-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/sync-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sync-api/tsconfig.app.json"
+      }
+    },
+    "users-api": {
+      "type": "application",
+      "root": "apps/users-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/users-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-api/tsconfig.app.json"
+      }
+    }
+  }
+}
