@@ -1,0 +1,4 @@
+Validações executadas com notebooks_05_executor_validacoes_completo.ipynb
+Repo root: /home/daniel/monorepo-ai-llm
+Notebook executado: /home/daniel/monorepo-ai-llm/spec/out/notebooks_02_validate_current_config_state.executed.ipynb
+Comandos: npm run -s lint | npm run -s test | npm run -s build
