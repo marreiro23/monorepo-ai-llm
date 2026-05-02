@@ -100,3 +100,5 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 ## Projeto MONOREPO
 
 - Sob controle PRs
+
+Closes #2
