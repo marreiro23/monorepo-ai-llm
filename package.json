@@ -13,6 +13,8 @@
     "build:sharepoint-api": "nest build sharepoint-api",
     "build:sync-api": "nest build sync-api",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "mcp:mermaid:sync": "node tools/mcp/ensure-mermaid-domains.mjs",
+    "mcp:mermaid:sync:all": "node tools/mcp/ensure-mermaid-domains.mjs",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

@@ -1,0 +1,44 @@
+%% managed-by: mcp-mermaid-domains
+%% domain: users-api
+flowchart LR
+
+  subgraph project[Aplicacao completa - dominios do monorepo]
+    root_repo[(monorepo-ai-llm)]
+    d_llm_ops_api[llm-ops-api]
+    root_repo --> d_llm_ops_api
+    d_monorepo_ai_llm[monorepo-ai-llm]
+    root_repo --> d_monorepo_ai_llm
+    d_sharepoint_api[sharepoint-api]
+    root_repo --> d_sharepoint_api
+    d_sync_api[sync-api]
+    root_repo --> d_sync_api
+    d_users_api[users-api]
+    root_repo --> d_users_api
+  end
+  style d_users_api fill:#dff6dd,stroke:#2e7d32,stroke-width:2px
+
+  subgraph local[Dominio users-api - dependencias internas do modulo]
+    n_users_api_app_module[AppModule\n(app.module.ts)]
+    n_users_api_health_controller[HealthController\n(health.controller.ts)]
+    n_users_api_main[main.ts]
+    n_users_api_users_api_controller[UsersApiController\n(users-api.controller.ts)]
+    n_users_api_users_api_module[UsersApiModule\n(users-api.module.ts)]
+    n_users_api_users_api_service[UsersApiService\n(users-api.service.ts)]
+  end
+
+  n_users_api_main -->|bootstrap| n_users_api_app_module
+  n_users_api_app_module -->|controllers| n_users_api_users_api_controller
+  n_users_api_app_module -->|providers| n_users_api_users_api_service
+  n_users_api_app_module -. importa .-> n_users_api_health_controller
+  n_users_api_main -. importa .-> n_users_api_app_module
+  n_users_api_users_api_controller -->|injeta| n_users_api_users_api_service
+  n_users_api_users_api_controller -. importa .-> n_users_api_users_api_service
+  n_users_api_users_api_module -. importa .-> n_users_api_users_api_controller
+  n_users_api_users_api_module -. importa .-> n_users_api_users_api_service
+
+  subgraph ext[Dependencias externas detectadas no dominio]
+    p_users_api__nestjs_common[( @nestjs/common )]
+    n_users_api_app_module -. usa .-> p_users_api__nestjs_common
+    p_users_api__nestjs_core[( @nestjs/core )]
+    n_users_api_app_module -. usa .-> p_users_api__nestjs_core
+  end

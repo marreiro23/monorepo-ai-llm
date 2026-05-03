@@ -1,0 +1,46 @@
+%% managed-by: mcp-mermaid-domains
+%% domain: sync-api
+flowchart LR
+
+  subgraph project[Aplicacao completa - dominios do monorepo]
+    root_repo[(monorepo-ai-llm)]
+    d_llm_ops_api[llm-ops-api]
+    root_repo --> d_llm_ops_api
+    d_monorepo_ai_llm[monorepo-ai-llm]
+    root_repo --> d_monorepo_ai_llm
+    d_sharepoint_api[sharepoint-api]
+    root_repo --> d_sharepoint_api
+    d_sync_api[sync-api]
+    root_repo --> d_sync_api
+    d_users_api[users-api]
+    root_repo --> d_users_api
+  end
+  style d_sync_api fill:#dff6dd,stroke:#2e7d32,stroke-width:2px
+
+  subgraph local[Dominio sync-api - dependencias internas do modulo]
+    n_sync_api_app_module[AppModule\n(app.module.ts)]
+    n_sync_api_health_controller[HealthController\n(health.controller.ts)]
+    n_sync_api_main[main.ts]
+    n_sync_api_sync_api_controller[SyncApiController\n(sync-api.controller.ts)]
+    n_sync_api_sync_api_module[SyncApiModule\n(sync-api.module.ts)]
+    n_sync_api_sync_api_service[SyncApiService\n(sync-api.service.ts)]
+  end
+
+  n_sync_api_main -->|bootstrap| n_sync_api_app_module
+  n_sync_api_app_module -->|controllers| n_sync_api_sync_api_controller
+  n_sync_api_app_module -->|controllers| n_sync_api_health_controller
+  n_sync_api_app_module -->|providers| n_sync_api_sync_api_service
+  n_sync_api_app_module -. importa .-> n_sync_api_health_controller
+  n_sync_api_main -. importa .-> n_sync_api_sync_api_module
+  n_sync_api_sync_api_controller -->|injeta| n_sync_api_sync_api_service
+  n_sync_api_sync_api_controller -. importa .-> n_sync_api_sync_api_service
+  n_sync_api_sync_api_module -. importa .-> n_sync_api_sync_api_controller
+  n_sync_api_sync_api_module -. importa .-> n_sync_api_sync_api_service
+  n_sync_api_sync_api_module -. importa .-> n_sync_api_health_controller
+
+  subgraph ext[Dependencias externas detectadas no dominio]
+    p_sync_api__nestjs_common[( @nestjs/common )]
+    n_sync_api_app_module -. usa .-> p_sync_api__nestjs_common
+    p_sync_api__nestjs_core[( @nestjs/core )]
+    n_sync_api_app_module -. usa .-> p_sync_api__nestjs_core
+  end

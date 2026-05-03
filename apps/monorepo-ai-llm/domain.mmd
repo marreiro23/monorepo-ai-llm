@@ -1,0 +1,58 @@
+%% managed-by: mcp-mermaid-domains
+%% domain: monorepo-ai-llm
+flowchart LR
+
+  subgraph project[Aplicacao completa - dominios do monorepo]
+    root_repo[(monorepo-ai-llm)]
+    d_llm_ops_api[llm-ops-api]
+    root_repo --> d_llm_ops_api
+    d_monorepo_ai_llm[monorepo-ai-llm]
+    root_repo --> d_monorepo_ai_llm
+    d_sharepoint_api[sharepoint-api]
+    root_repo --> d_sharepoint_api
+    d_sync_api[sync-api]
+    root_repo --> d_sync_api
+    d_users_api[users-api]
+    root_repo --> d_users_api
+  end
+  style d_monorepo_ai_llm fill:#dff6dd,stroke:#2e7d32,stroke-width:2px
+
+  subgraph local[Dominio monorepo-ai-llm - dependencias internas do modulo]
+    n_monorepo_ai_llm_app_controller[AppController\n(app.controller.ts)]
+    n_monorepo_ai_llm_app_module[AppModule\n(app.module.ts)]
+    n_monorepo_ai_llm_app_service[AppService\n(app.service.ts)]
+    n_monorepo_ai_llm_health_controller[HealthController\n(health.controller.ts)]
+    n_monorepo_ai_llm_main[main.ts]
+    n_monorepo_ai_llm_mermaid_mcp_controller[MermaidMcpController\n(mermaid-mcp.controller.ts)]
+    n_monorepo_ai_llm_mermaid_mcp_service[MermaidMcpService\n(mermaid-mcp.service.ts)]
+  end
+
+  n_monorepo_ai_llm_main -->|bootstrap| n_monorepo_ai_llm_app_module
+  n_monorepo_ai_llm_app_module -->|controllers| n_monorepo_ai_llm_app_controller
+  n_monorepo_ai_llm_app_module -->|controllers| n_monorepo_ai_llm_health_controller
+  n_monorepo_ai_llm_app_module -->|controllers| n_monorepo_ai_llm_mermaid_mcp_controller
+  n_monorepo_ai_llm_app_module -->|providers| n_monorepo_ai_llm_app_service
+  n_monorepo_ai_llm_app_module -->|providers| n_monorepo_ai_llm_mermaid_mcp_service
+  n_monorepo_ai_llm_app_controller -->|injeta| n_monorepo_ai_llm_app_service
+  n_monorepo_ai_llm_app_controller -. importa .-> n_monorepo_ai_llm_app_service
+  n_monorepo_ai_llm_app_module -. importa .-> n_monorepo_ai_llm_app_controller
+  n_monorepo_ai_llm_app_module -. importa .-> n_monorepo_ai_llm_app_service
+  n_monorepo_ai_llm_app_module -. importa .-> n_monorepo_ai_llm_health_controller
+  n_monorepo_ai_llm_app_module -. importa .-> n_monorepo_ai_llm_mermaid_mcp_controller
+  n_monorepo_ai_llm_app_module -. importa .-> n_monorepo_ai_llm_mermaid_mcp_service
+  n_monorepo_ai_llm_main -. importa .-> n_monorepo_ai_llm_app_module
+  n_monorepo_ai_llm_mermaid_mcp_controller -->|injeta| n_monorepo_ai_llm_mermaid_mcp_service
+  n_monorepo_ai_llm_mermaid_mcp_controller -. importa .-> n_monorepo_ai_llm_mermaid_mcp_service
+
+  subgraph ext[Dependencias externas detectadas no dominio]
+    p_monorepo_ai_llm__nestjs_common[( @nestjs/common )]
+    n_monorepo_ai_llm_app_module -. usa .-> p_monorepo_ai_llm__nestjs_common
+    p_monorepo_ai_llm__nestjs_core[( @nestjs/core )]
+    n_monorepo_ai_llm_app_module -. usa .-> p_monorepo_ai_llm__nestjs_core
+    p_monorepo_ai_llm_node_child_process[( node:child_process )]
+    n_monorepo_ai_llm_app_module -. usa .-> p_monorepo_ai_llm_node_child_process
+    p_monorepo_ai_llm_node_fs[( node:fs )]
+    n_monorepo_ai_llm_app_module -. usa .-> p_monorepo_ai_llm_node_fs
+    p_monorepo_ai_llm_node_path[( node:path )]
+    n_monorepo_ai_llm_app_module -. usa .-> p_monorepo_ai_llm_node_path
+  end
