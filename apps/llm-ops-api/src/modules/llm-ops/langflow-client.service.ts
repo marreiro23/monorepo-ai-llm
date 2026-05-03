@@ -21,9 +21,11 @@ export class LangflowClientService {
   constructor(private readonly configService: ConfigService) {}
 
   async probe(): Promise<LangflowProbeResult> {
-    const enabled = this.configService.get<string>('LANGFLOW_ENABLED') === 'true';
+    const enabled =
+      this.configService.get<string>('LANGFLOW_ENABLED') === 'true';
     const url = this.configService.get<string>('LANGFLOW_URL')?.trim() ?? null;
-    const ragFlowId = this.configService.get<string>('LANGFLOW_RAG_FLOW_ID')?.trim() || null;
+    const ragFlowId =
+      this.configService.get<string>('LANGFLOW_RAG_FLOW_ID')?.trim() || null;
 
     if (!enabled || !url) {
       return {
@@ -31,7 +33,7 @@ export class LangflowClientService {
         reachable: false,
         version: null,
         ragFlowId,
-        error: enabled ? 'LANGFLOW_URL is not configured' : null
+        error: enabled ? 'LANGFLOW_URL is not configured' : null,
       };
     }
 
@@ -41,7 +43,7 @@ export class LangflowClientService {
     try {
       const response = await fetch(`${url.replace(/\/$/, '')}/api/v1/version`, {
         method: 'GET',
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -50,11 +52,11 @@ export class LangflowClientService {
           reachable: false,
           version: null,
           ragFlowId,
-          error: `Langflow version probe returned HTTP ${response.status}`
+          error: `Langflow version probe returned HTTP ${response.status}`,
         };
       }
 
-      const body = await response.json() as { version?: unknown };
+      const body = (await response.json()) as { version?: unknown };
       const version = typeof body.version === 'string' ? body.version : null;
 
       return {
@@ -62,10 +64,11 @@ export class LangflowClientService {
         reachable: true,
         version,
         ragFlowId,
-        error: null
+        error: null,
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown Langflow probe error';
+      const message =
+        error instanceof Error ? error.message : 'Unknown Langflow probe error';
       this.logger.warn(`Langflow probe failed: ${message}`);
 
       return {
@@ -73,17 +76,23 @@ export class LangflowClientService {
         reachable: false,
         version: null,
         ragFlowId,
-        error: message
+        error: message,
       };
     } finally {
       clearTimeout(timeout);
     }
   }
 
-  async runRagFlow(inputValue: string, sessionId: string, context: string[]): Promise<LangflowRunResult> {
-    const enabled = this.configService.get<string>('LANGFLOW_ENABLED') === 'true';
+  async runRagFlow(
+    inputValue: string,
+    sessionId: string,
+    context: string[],
+  ): Promise<LangflowRunResult> {
+    const enabled =
+      this.configService.get<string>('LANGFLOW_ENABLED') === 'true';
     const url = this.configService.get<string>('LANGFLOW_URL')?.trim() ?? null;
-    const ragFlowId = this.configService.get<string>('LANGFLOW_RAG_FLOW_ID')?.trim() || null;
+    const ragFlowId =
+      this.configService.get<string>('LANGFLOW_RAG_FLOW_ID')?.trim() || null;
 
     if (!enabled || !url || !ragFlowId) {
       return {
@@ -93,7 +102,12 @@ export class LangflowClientService {
         ragFlowId,
         attempted: false,
         outputText: null,
-        error: enabled && url ? 'LANGFLOW_RAG_FLOW_ID is not configured' : enabled ? 'LANGFLOW_URL is not configured' : null
+        error:
+          enabled && url
+            ? 'LANGFLOW_RAG_FLOW_ID is not configured'
+            : enabled
+              ? 'LANGFLOW_URL is not configured'
+              : null,
       };
     }
 
@@ -103,24 +117,27 @@ export class LangflowClientService {
     try {
       const headers: Record<string, string> = {
         accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       };
       const apiKey = this.configService.get<string>('LANGFLOW_API_KEY')?.trim();
       if (apiKey) {
         headers['x-api-key'] = apiKey;
       }
 
-      const response = await fetch(`${url.replace(/\/$/, '')}/api/v1/run/${encodeURIComponent(ragFlowId)}?stream=false`, {
-        method: 'POST',
-        headers,
-        signal: controller.signal,
-        body: JSON.stringify({
-          input_value: this.buildRagInput(inputValue, context),
-          input_type: 'chat',
-          output_type: 'chat',
-          session_id: sessionId
-        })
-      });
+      const response = await fetch(
+        `${url.replace(/\/$/, '')}/api/v1/run/${encodeURIComponent(ragFlowId)}?stream=false`,
+        {
+          method: 'POST',
+          headers,
+          signal: controller.signal,
+          body: JSON.stringify({
+            input_value: this.buildRagInput(inputValue, context),
+            input_type: 'chat',
+            output_type: 'chat',
+            session_id: sessionId,
+          }),
+        },
+      );
 
       const body = await this.readJsonOrText(response);
       if (!response.ok) {
@@ -131,7 +148,7 @@ export class LangflowClientService {
           ragFlowId,
           attempted: true,
           outputText: null,
-          error: `Langflow RAG run returned HTTP ${response.status}: ${this.summarizeBody(body)}`
+          error: `Langflow RAG run returned HTTP ${response.status}: ${this.summarizeBody(body)}`,
         };
       }
 
@@ -142,10 +159,13 @@ export class LangflowClientService {
         ragFlowId,
         attempted: true,
         outputText: this.extractOutputText(body),
-        error: null
+        error: null,
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown Langflow RAG run error';
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Unknown Langflow RAG run error';
       this.logger.warn(`Langflow RAG run failed: ${message}`);
 
       return {
@@ -155,7 +175,7 @@ export class LangflowClientService {
         ragFlowId,
         attempted: true,
         outputText: null,
-        error: message
+        error: message,
       };
     } finally {
       clearTimeout(timeout);
@@ -171,12 +191,14 @@ export class LangflowClientService {
       inputValue,
       '',
       'Contexto RAG recuperado da base Astra:',
-      ...context.map((item, index) => `${index + 1}. ${item}`)
+      ...context.map((item, index) => `${index + 1}. ${item}`),
     ].join('\n');
   }
 
   private readTimeoutMs(): number {
-    const configured = Number(this.configService.get<string>('LANGFLOW_RUN_TIMEOUT_MS') ?? 15000);
+    const configured = Number(
+      this.configService.get<string>('LANGFLOW_RUN_TIMEOUT_MS') ?? 15000,
+    );
     return Number.isFinite(configured) && configured > 0 ? configured : 15000;
   }
 
@@ -203,7 +225,9 @@ export class LangflowClientService {
     }
 
     const root = payload as Record<string, unknown>;
-    const directText = this.readStringPath(root, ['message']) ?? this.readStringPath(root, ['text']);
+    const directText =
+      this.readStringPath(root, ['message']) ??
+      this.readStringPath(root, ['text']);
     if (directText) {
       return directText;
     }
@@ -229,7 +253,7 @@ export class LangflowClientService {
       this.readStringPath(item, ['results', 'message', 'text']),
       this.readStringPath(item, ['results', 'text']),
       this.readStringPath(item, ['message', 'text']),
-      this.readStringPath(item, ['text'])
+      this.readStringPath(item, ['text']),
     ];
     const direct = candidates.find((candidate) => candidate !== null);
     if (direct) {
@@ -247,7 +271,10 @@ export class LangflowClientService {
     return null;
   }
 
-  private readStringPath(payload: Record<string, unknown>, path: string[]): string | null {
+  private readStringPath(
+    payload: Record<string, unknown>,
+    path: string[],
+  ): string | null {
     let current: unknown = payload;
     for (const segment of path) {
       if (!current || typeof current !== 'object' || !(segment in current)) {
@@ -256,7 +283,9 @@ export class LangflowClientService {
       current = (current as Record<string, unknown>)[segment];
     }
 
-    return typeof current === 'string' && current.trim() ? current.trim() : null;
+    return typeof current === 'string' && current.trim()
+      ? current.trim()
+      : null;
   }
 
   private summarizeBody(payload: unknown): string {

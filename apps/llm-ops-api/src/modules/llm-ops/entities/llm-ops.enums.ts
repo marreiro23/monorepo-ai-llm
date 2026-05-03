@@ -1,6 +1,6 @@
 export enum InvocationSourceEnum {
   VSCODE = 'vscode',
-  API = 'api'
+  API = 'api',
 }
 
 export enum ApprovalStatusEnum {
@@ -8,13 +8,13 @@ export enum ApprovalStatusEnum {
   IN_REVIEW = 'in_review',
   APPROVED = 'approved',
   REJECTED = 'rejected',
-  DEPRECATED = 'deprecated'
+  DEPRECATED = 'deprecated',
 }
 
 export enum ValidationStatusEnum {
   PASSED = 'passed',
   FAILED = 'failed',
-  WARNING = 'warning'
+  WARNING = 'warning',
 }
 
 export enum PromptKindEnum {
@@ -23,7 +23,7 @@ export enum PromptKindEnum {
   WRAPPER = 'wrapper',
   HANDOFF = 'handoff',
   TOPIC_FLOW = 'topic-flow',
-  INSTRUCTION = 'instruction'
+  INSTRUCTION = 'instruction',
 }
 
 export enum DependencyTypeEnum {
@@ -32,7 +32,7 @@ export enum DependencyTypeEnum {
   PROMPT_VERSION = 'prompt-version',
   TOPIC_FLOW = 'topic-flow',
   REFERENCE = 'reference',
-  TOOLING = 'tooling'
+  TOOLING = 'tooling',
 }
 
 export enum LearningEventTypeEnum {
@@ -41,20 +41,20 @@ export enum LearningEventTypeEnum {
   EXECUTION_FAILURE = 'execution_failure',
   OUTPUT_REJECTION = 'output_rejection',
   HUMAN_CORRECTION = 'human_correction',
-  HANDOFF_FAILURE = 'handoff_failure'
+  HANDOFF_FAILURE = 'handoff_failure',
 }
 
 export enum RuntimeOutcomeEnum {
   SUCCESS = 'success',
   PARTIAL_SUCCESS = 'partial_success',
   FAILED = 'failed',
-  ABANDONED = 'abandoned'
+  ABANDONED = 'abandoned',
 }
 
 export enum RegressionStatusEnum {
   NOT_RUN = 'not_run',
   PASSED = 'passed',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export enum TopicDomainEnum {
@@ -63,5 +63,5 @@ export enum TopicDomainEnum {
   SHAREPOINT = 'sharepoint',
   TEAMS_CHANNELS = 'teams-channels',
   GROUPS = 'groups',
-  ENDPOINT_CREATION = 'endpoint-creation'
+  ENDPOINT_CREATION = 'endpoint-creation',
 }

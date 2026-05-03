@@ -1,5 +1,18 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
-import { InvocationSourceEnum, LearningEventTypeEnum, RuntimeOutcomeEnum, TopicDomainEnum } from '../entities/llm-ops.enums.js';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import {
+  InvocationSourceEnum,
+  LearningEventTypeEnum,
+  RuntimeOutcomeEnum,
+  TopicDomainEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreateTopicInteractionDto {
   @IsString()

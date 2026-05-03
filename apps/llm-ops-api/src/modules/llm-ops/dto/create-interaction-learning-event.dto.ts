@@ -1,5 +1,14 @@
-import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
-import { InvocationSourceEnum, LearningEventTypeEnum } from '../entities/llm-ops.enums.js';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import {
+  InvocationSourceEnum,
+  LearningEventTypeEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreateInteractionLearningEventDto {
   @IsString()

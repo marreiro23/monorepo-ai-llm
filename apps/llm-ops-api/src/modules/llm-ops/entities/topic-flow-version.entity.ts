@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { ApprovalStatusEnum, RegressionStatusEnum } from './llm-ops.enums.js';
 import { TopicFlowEntity } from './topic-flow.entity.js';
 
@@ -18,10 +26,22 @@ export class TopicFlowVersionEntity {
   @Column({ name: 'version_number', type: 'integer' })
   versionNumber!: number;
 
-  @Column({ name: 'approval_status', type: 'enum', enum: ApprovalStatusEnum, enumName: 'approval_status', default: ApprovalStatusEnum.DRAFT })
+  @Column({
+    name: 'approval_status',
+    type: 'enum',
+    enum: ApprovalStatusEnum,
+    enumName: 'approval_status',
+    default: ApprovalStatusEnum.DRAFT,
+  })
   approvalStatus!: ApprovalStatusEnum;
 
-  @Column({ name: 'regression_status', type: 'enum', enum: RegressionStatusEnum, enumName: 'regression_status', default: RegressionStatusEnum.NOT_RUN })
+  @Column({
+    name: 'regression_status',
+    type: 'enum',
+    enum: RegressionStatusEnum,
+    enumName: 'regression_status',
+    default: RegressionStatusEnum.NOT_RUN,
+  })
   regressionStatus!: RegressionStatusEnum;
 
   @Column({ name: 'baseline_version_id', type: 'uuid', nullable: true })

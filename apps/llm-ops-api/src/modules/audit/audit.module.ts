@@ -7,6 +7,6 @@ import { AuditEventsModule } from '../../common/events/audit-events.module.js';
   imports: [AuditEventsModule],
   controllers: [AuditController],
   providers: [AuditService],
-  exports: [AuditService]
+  exports: [AuditService],
 })
 export class AuditModule {}

@@ -7,7 +7,7 @@ import type {
   UserContract,
   UserDeleteResponseContract,
   UserMutationResponseContract,
-  UsersListResponseContract
+  UsersListResponseContract,
 } from '@api-llm-embedded/shared';
 import { UserEntity } from './entities/user.entity.js';
 import type { CreateUserDto } from './dto/create-user.dto.js';
@@ -15,7 +15,10 @@ import type { UpdateUserDto } from './dto/update-user.dto.js';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(UserEntity) private readonly usersRepository: Repository<UserEntity>) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
+  ) {}
 
   private toUserContract(user: UserEntity): UserContract {
     return {
@@ -23,30 +26,32 @@ export class UsersService {
       fullName: user.fullName,
       email: user.email,
       createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString()
+      updatedAt: user.updatedAt.toISOString(),
     };
   }
 
-  async createUser(payload: CreateUserDto): Promise<UserMutationResponseContract> {
+  async createUser(
+    payload: CreateUserDto,
+  ): Promise<UserMutationResponseContract> {
     const user = this.usersRepository.create(payload);
     const savedUser = await this.usersRepository.save(user);
 
     return {
       success: true,
-      data: this.toUserContract(savedUser)
+      data: this.toUserContract(savedUser),
     };
   }
 
   async listUsers(): Promise<UsersListResponseContract> {
     const users = await this.usersRepository.find({
       order: {
-        createdAt: 'DESC'
-      }
+        createdAt: 'DESC',
+      },
     });
 
     return {
       success: true,
-      data: users.map((item) => this.toUserContract(item))
+      data: users.map((item) => this.toUserContract(item)),
     };
   }
 
@@ -56,7 +61,7 @@ export class UsersService {
     if (!user) {
       const error: ErrorResponseContract = {
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       };
 
       return error;
@@ -64,17 +69,20 @@ export class UsersService {
 
     return {
       success: true,
-      data: this.toUserContract(user)
+      data: this.toUserContract(user),
     };
   }
 
-  async updateUser(id: string, payload: UpdateUserDto): Promise<UserMutationResponseContract | UserByIdResponseContract> {
+  async updateUser(
+    id: string,
+    payload: UpdateUserDto,
+  ): Promise<UserMutationResponseContract | UserByIdResponseContract> {
     const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
       const error: ErrorResponseContract = {
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       };
 
       return error;
@@ -85,7 +93,7 @@ export class UsersService {
 
     return {
       success: true,
-      data: this.toUserContract(savedUser)
+      data: this.toUserContract(savedUser),
     };
   }
 
@@ -95,7 +103,7 @@ export class UsersService {
     if (!user) {
       const error: ErrorResponseContract = {
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       };
 
       return error;
@@ -105,7 +113,7 @@ export class UsersService {
 
     return {
       success: true,
-      data: { id }
+      data: { id },
     };
   }
 }

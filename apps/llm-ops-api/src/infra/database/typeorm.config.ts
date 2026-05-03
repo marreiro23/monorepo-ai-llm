@@ -11,7 +11,7 @@ import {
   PromptValidationEntity,
   PromptVersionEntity,
   TopicFlowEntity,
-  TopicFlowVersionEntity
+  TopicFlowVersionEntity,
 } from '../../modules/llm-ops/entities/index.js';
 
 export const MAIN_DATABASE_CONNECTION_NAME = 'default';
@@ -24,7 +24,10 @@ const isTypeScriptRuntime = currentModulePath.endsWith('.ts');
 const runtimeEntityGlobs = (sourceGlob: string, distGlob: string): string[] =>
   isTypeScriptRuntime ? [sourceGlob] : [distGlob];
 
-const runtimeMigrationGlobs = (sourceFile: string, distFile: string): string[] => {
+const runtimeMigrationGlobs = (
+  sourceFile: string,
+  distFile: string,
+): string[] => {
   if (isTypeScriptRuntime) {
     return [resolve(currentDir, 'migrations', sourceFile.split('/').pop()!)];
   }
@@ -41,14 +44,16 @@ const llmOpsEntityClasses = [
   PromptValidationEntity,
   PromptVersionEntity,
   TopicFlowEntity,
-  TopicFlowVersionEntity
+  TopicFlowVersionEntity,
 ];
 
-const initializeManagedDataSource = async (options: DataSourceOptions): Promise<DataSource> => {
+const initializeManagedDataSource = async (
+  options: DataSourceOptions,
+): Promise<DataSource> => {
   const typedOptions = options as DataSourceOptions & { schema?: string };
   const dataSource = new DataSource({
     ...options,
-    synchronize: false
+    synchronize: false,
   });
 
   await dataSource.initialize();
@@ -74,7 +79,9 @@ const initializeManagedDataSource = async (options: DataSourceOptions): Promise<
           continue;
         }
         const normalizedSchema = schemaName.trim().replace(/"/g, '""');
-        await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${normalizedSchema}"`);
+        await queryRunner.query(
+          `CREATE SCHEMA IF NOT EXISTS "${normalizedSchema}"`,
+        );
       }
     } finally {
       await queryRunner.query('SELECT pg_advisory_unlock($1)', [lockId]);
@@ -117,16 +124,32 @@ const readRequiredString = (value: string | undefined, key: string): string => {
 
 const buildBaseOptions = (
   configService: ConfigService,
-  prefix: 'PG' | 'LLM_PG'
-): any => {
-  const host = readRequiredString(configService.get<string>(`${prefix}_HOST`), `${prefix}_HOST`);
+  prefix: 'PG' | 'LLM_PG',
+): TypeOrmModuleOptions => {
+  const host = readRequiredString(
+    configService.get<string>(`${prefix}_HOST`),
+    `${prefix}_HOST`,
+  );
   const port = readPort(configService.get<string>(`${prefix}_PORT`), 5432);
-  const database = readRequiredString(configService.get<string>(`${prefix}_DATABASE`), `${prefix}_DATABASE`);
-  const user = readRequiredString(configService.get<string>(`${prefix}_USER`), `${prefix}_USER`);
-  const password = readRequiredString(configService.get<string>(`${prefix}_PASSWORD`), `${prefix}_PASSWORD`);
+  const database = readRequiredString(
+    configService.get<string>(`${prefix}_DATABASE`),
+    `${prefix}_DATABASE`,
+  );
+  const user = readRequiredString(
+    configService.get<string>(`${prefix}_USER`),
+    `${prefix}_USER`,
+  );
+  const password = readRequiredString(
+    configService.get<string>(`${prefix}_PASSWORD`),
+    `${prefix}_PASSWORD`,
+  );
   const schema = configService.get<string>(`${prefix}_SCHEMA`) ?? 'public';
-  const ssl = prefix === 'LLM_PG' ? readBoolean(configService.get<string>(`${prefix}_SSL`), false) : false;
-  const synchronize = configService.get<string>('DATABASE_SYNCHRONIZE') === 'true';
+  const ssl =
+    prefix === 'LLM_PG'
+      ? readBoolean(configService.get<string>(`${prefix}_SSL`), false)
+      : false;
+  const synchronize =
+    configService.get<string>('DATABASE_SYNCHRONIZE') === 'true';
 
   return {
     type: 'postgres',
@@ -141,18 +164,22 @@ const buildBaseOptions = (
     extra: {
       max: readPort(configService.get<string>(`${prefix}_POOL_MAX`), 10),
       min: readPort(configService.get<string>(`${prefix}_POOL_MIN`), 2),
-      idleTimeoutMillis: 30000
-    }
+      idleTimeoutMillis: 30000,
+    },
   };
 };
 
-export function buildTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions & { dataSourceFactory: (options: DataSourceOptions) => Promise<DataSource> } {
+export function buildTypeOrmOptions(
+  configService: ConfigService,
+): TypeOrmModuleOptions & {
+  dataSourceFactory: (options: DataSourceOptions) => Promise<DataSource>;
+} {
   const baseOptions = buildBaseOptions(configService, 'PG');
 
   return {
     ...baseOptions,
     autoLoadEntities: true,
-    dataSourceFactory: async (options) => initializeManagedDataSource(options as DataSourceOptions)
+    dataSourceFactory: async (options) => initializeManagedDataSource(options),
   };
 }
 
@@ -168,21 +195,25 @@ export const AppDataSource = new DataSource({
   migrations: [
     ...runtimeMigrationGlobs(
       'src/infra/database/migrations/1713830500000-CreateUsersTable.ts',
-      'dist/infra/database/migrations/1713830500000-CreateUsersTable.js'
+      'dist/infra/database/migrations/1713830500000-CreateUsersTable.js',
     ),
     ...runtimeMigrationGlobs(
       'src/infra/database/migrations/1713830600000-CreateSyncSchema.ts',
-      'dist/infra/database/migrations/1713830600000-CreateSyncSchema.js'
+      'dist/infra/database/migrations/1713830600000-CreateSyncSchema.js',
     ),
     ...runtimeMigrationGlobs(
       'src/infra/database/migrations/1777593600000-CreateApiKeysTable.ts',
-      'dist/infra/database/migrations/1777593600000-CreateApiKeysTable.js'
-    )
+      'dist/infra/database/migrations/1777593600000-CreateApiKeysTable.js',
+    ),
   ],
-  synchronize: false
+  synchronize: false,
 });
 
-export function buildLlmOpsTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions & { dataSourceFactory: (options: DataSourceOptions) => Promise<DataSource> } {
+export function buildLlmOpsTypeOrmOptions(
+  configService: ConfigService,
+): TypeOrmModuleOptions & {
+  dataSourceFactory: (options: DataSourceOptions) => Promise<DataSource>;
+} {
   const baseOptions = buildBaseOptions(configService, 'LLM_PG');
 
   return {
@@ -190,7 +221,7 @@ export function buildLlmOpsTypeOrmOptions(configService: ConfigService): TypeOrm
     schema: configService.get<string>('LLM_PG_SCHEMA') ?? 'llm_ops',
     autoLoadEntities: false,
     entities: llmOpsEntityClasses,
-    dataSourceFactory: async (options) => initializeManagedDataSource(options as DataSourceOptions)
+    dataSourceFactory: async (options) => initializeManagedDataSource(options),
   };
 }
 
@@ -205,7 +236,7 @@ export const LlmOpsDataSource = new DataSource({
   entities: llmOpsEntityClasses,
   migrations: runtimeMigrationGlobs(
     'src/infra/database/migrations/1713830400000-CreateLlmOpsSchema.ts',
-    'dist/infra/database/migrations/1713830400000-CreateLlmOpsSchema.js'
+    'dist/infra/database/migrations/1713830400000-CreateLlmOpsSchema.js',
   ),
-  synchronize: false
+  synchronize: false,
 });

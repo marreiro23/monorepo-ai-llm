@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DependencyTypeEnum } from './llm-ops.enums.js';
 import { PromptVersionEntity } from './prompt-version.entity.js';
 
@@ -14,13 +21,26 @@ export class PromptDependencyEntity {
   @Column({ name: 'prompt_version_id', type: 'uuid' })
   promptVersionId!: string;
 
-  @Column({ name: 'dependency_type', type: 'enum', enum: DependencyTypeEnum, enumName: 'dependency_type' })
+  @Column({
+    name: 'dependency_type',
+    type: 'enum',
+    enum: DependencyTypeEnum,
+    enumName: 'dependency_type',
+  })
   dependencyType!: DependencyTypeEnum;
 
-  @Column({ name: 'depends_on_prompt_template_id', type: 'uuid', nullable: true })
+  @Column({
+    name: 'depends_on_prompt_template_id',
+    type: 'uuid',
+    nullable: true,
+  })
   dependsOnPromptTemplateId!: string | null;
 
-  @Column({ name: 'depends_on_prompt_version_id', type: 'uuid', nullable: true })
+  @Column({
+    name: 'depends_on_prompt_version_id',
+    type: 'uuid',
+    nullable: true,
+  })
   dependsOnPromptVersionId!: string | null;
 
   @Column({ name: 'depends_on_topic_flow_id', type: 'uuid', nullable: true })

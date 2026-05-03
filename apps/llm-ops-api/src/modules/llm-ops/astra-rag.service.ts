@@ -1,10 +1,16 @@
 import { Collection } from '@datastax/astra-db-ts';
-import { BadGatewayException, BadRequestException, Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
 import {
   createAstraDbConnection,
-  readAstraDbConnectionConfig
+  readAstraDbConnectionConfig,
 } from '../../infra/database/astradb/astra-client.js';
 import {
   assertAstraDocumentShape,
@@ -12,7 +18,7 @@ import {
   buildLexicalField,
   buildLexicalCandidates,
   normalizeIndexedString,
-  summarizeAstraError
+  summarizeAstraError,
 } from './astra-dataapi.guardrails.js';
 
 type AstraKnowledgeDocument = {
@@ -65,7 +71,11 @@ export class AstraRagService {
     return this.configService.get<string>('ASTRA_DB_ENABLED') === 'true';
   }
 
-  async retrieveContext(message: string, agentId?: string | null, limit = 4): Promise<string[]> {
+  async retrieveContext(
+    message: string,
+    agentId?: string | null,
+    limit = 4,
+  ): Promise<string[]> {
     if (!this.isEnabled()) {
       return [];
     }
@@ -83,7 +93,10 @@ export class AstraRagService {
         }
       } else {
         for (const candidate of lexicalCandidates) {
-          const document = await this.findLexicalDocument(collection, candidate);
+          const document = await this.findLexicalDocument(
+            collection,
+            candidate,
+          );
 
           if (!document || seenIds.has(document._id)) {
             continue;
@@ -114,14 +127,16 @@ export class AstraRagService {
         .filter((item): item is string => item !== null)
         .slice(0, limit);
     } catch (error) {
-      this.logger.error(`AstraDB retrieval failed: ${summarizeAstraError(error)}`);
+      this.logger.error(
+        `AstraDB retrieval failed: ${summarizeAstraError(error)}`,
+      );
       throw new BadGatewayException('AstraDB retrieval failed');
     }
   }
 
   private async findLexicalDocument(
     collection: Collection<AstraKnowledgeDocument>,
-    candidate: string
+    candidate: string,
   ): Promise<AstraKnowledgeDocument | null> {
     const maxAttempts = 2;
 
@@ -129,14 +144,16 @@ export class AstraRagService {
       try {
         return await collection.findOne(
           { $lexical: { $match: candidate } },
-          { sort: { $lexical: candidate } }
+          { sort: { $lexical: candidate } },
         );
       } catch (error) {
         const isLastAttempt = attempt === maxAttempts;
         const summary = summarizeAstraError(error);
 
         if (isLastAttempt) {
-          this.logger.warn(`AstraDB lexical candidate skipped after retry: ${summary}`);
+          this.logger.warn(
+            `AstraDB lexical candidate skipped after retry: ${summary}`,
+          );
           return null;
         }
 
@@ -154,7 +171,9 @@ export class AstraRagService {
     });
   }
 
-  async ingestKnowledgeDocuments(documents: AstraKnowledgeDocumentInput[]): Promise<string[]> {
+  async ingestKnowledgeDocuments(
+    documents: AstraKnowledgeDocumentInput[],
+  ): Promise<string[]> {
     if (!this.isEnabled()) {
       throw new ServiceUnavailableException('AstraDB integration is disabled');
     }
@@ -165,7 +184,10 @@ export class AstraRagService {
 
       for (const document of documents) {
         const documentId = randomUUID();
-        const preparedDocument = this.prepareKnowledgeDocument(documentId, document);
+        const preparedDocument = this.prepareKnowledgeDocument(
+          documentId,
+          document,
+        );
 
         await collection.insertOne(preparedDocument);
         insertedIds.push(documentId);
@@ -177,12 +199,14 @@ export class AstraRagService {
         throw error;
       }
 
-      this.logger.error(`AstraDB knowledge-base ingestion failed: ${summarizeAstraError(error)}`);
+      this.logger.error(
+        `AstraDB knowledge-base ingestion failed: ${summarizeAstraError(error)}`,
+      );
       throw new BadGatewayException('AstraDB knowledge-base ingestion failed');
     }
   }
 
-  async recordInteraction(payload: Record<string, unknown>): Promise<void> {
+  recordInteraction(payload: Record<string, unknown>): void {
     if (!this.isEnabled()) {
       return;
     }
@@ -213,7 +237,9 @@ export class AstraRagService {
           const collection = this.getInteractionCollection();
           await collection.insertOne(this.prepareInteractionDocument(payload));
         } catch (error) {
-          this.logger.warn(`AstraDB interaction logging skipped: ${summarizeAstraError(error)}`);
+          this.logger.warn(
+            `AstraDB interaction logging skipped: ${summarizeAstraError(error)}`,
+          );
         }
       }
     } finally {
@@ -223,11 +249,13 @@ export class AstraRagService {
 
   private prepareKnowledgeDocument(
     documentId: string,
-    document: AstraKnowledgeDocumentInput
+    document: AstraKnowledgeDocumentInput,
   ): AstraKnowledgeDocument {
     const title = normalizeIndexedString(document.title);
     const content = normalizeIndexedString(document.content);
-    const source = document.source ? normalizeIndexedString(document.source) : null;
+    const source = document.source
+      ? normalizeIndexedString(document.source)
+      : null;
     const lexical = buildLexicalField(title, content);
 
     assertIndexedStringLimit(title, 'title');
@@ -245,24 +273,50 @@ export class AstraRagService {
       tags: (document.tags ?? []).slice(0, 32),
       isActive: document.isActive ?? true,
       metadata: document.metadata ?? {},
-      $lexical: lexical
+      $lexical: lexical,
     };
 
     assertAstraDocumentShape(payload, 'knowledge document');
     return payload;
   }
 
-  private prepareInteractionDocument(payload: Record<string, unknown>): AstraInteractionDocument {
+  private prepareInteractionDocument(
+    payload: Record<string, unknown>,
+  ): AstraInteractionDocument {
     const preparedDocument: AstraInteractionDocument = {
       _id: randomUUID(),
-      agentId: typeof payload.agentId === 'string' ? normalizeIndexedString(payload.agentId) : null,
-      promptVersionId: typeof payload.promptVersionId === 'string' ? normalizeIndexedString(payload.promptVersionId) : null,
-      topicFlowVersionId: typeof payload.topicFlowVersionId === 'string' ? normalizeIndexedString(payload.topicFlowVersionId) : null,
-      invocationSource: typeof payload.invocationSource === 'string' ? normalizeIndexedString(payload.invocationSource) : null,
-      correlationId: typeof payload.correlationId === 'string' ? normalizeIndexedString(payload.correlationId) : null,
-      sessionFingerprint: typeof payload.sessionFingerprint === 'string' ? normalizeIndexedString(payload.sessionFingerprint) : null,
-      message: typeof payload.message === 'string' ? normalizeIndexedString(payload.message) : null,
-      answer: typeof payload.answer === 'string' ? normalizeIndexedString(payload.answer) : null,
+      agentId:
+        typeof payload.agentId === 'string'
+          ? normalizeIndexedString(payload.agentId)
+          : null,
+      promptVersionId:
+        typeof payload.promptVersionId === 'string'
+          ? normalizeIndexedString(payload.promptVersionId)
+          : null,
+      topicFlowVersionId:
+        typeof payload.topicFlowVersionId === 'string'
+          ? normalizeIndexedString(payload.topicFlowVersionId)
+          : null,
+      invocationSource:
+        typeof payload.invocationSource === 'string'
+          ? normalizeIndexedString(payload.invocationSource)
+          : null,
+      correlationId:
+        typeof payload.correlationId === 'string'
+          ? normalizeIndexedString(payload.correlationId)
+          : null,
+      sessionFingerprint:
+        typeof payload.sessionFingerprint === 'string'
+          ? normalizeIndexedString(payload.sessionFingerprint)
+          : null,
+      message:
+        typeof payload.message === 'string'
+          ? normalizeIndexedString(payload.message)
+          : null,
+      answer:
+        typeof payload.answer === 'string'
+          ? normalizeIndexedString(payload.answer)
+          : null,
       retrievedContext: Array.isArray(payload.retrievedContext)
         ? payload.retrievedContext
             .filter((item): item is string => typeof item === 'string')
@@ -273,8 +327,10 @@ export class AstraRagService {
       $lexical: buildLexicalField(
         typeof payload.message === 'string' ? payload.message : null,
         typeof payload.answer === 'string' ? payload.answer : null,
-        typeof payload.sessionFingerprint === 'string' ? payload.sessionFingerprint : null
-      )
+        typeof payload.sessionFingerprint === 'string'
+          ? payload.sessionFingerprint
+          : null,
+      ),
     };
 
     assertAstraDocumentShape(preparedDocument, 'interaction document');
@@ -282,11 +338,15 @@ export class AstraRagService {
   }
 
   private getKnowledgeCollection(): Collection<AstraKnowledgeDocument> {
-    return this.getDb().collection<AstraKnowledgeDocument>(this.readRequiredConfig('ASTRA_COLLECTION_KNOWLEDGE_BASE'));
+    return this.getDb().collection<AstraKnowledgeDocument>(
+      this.readRequiredConfig('ASTRA_COLLECTION_KNOWLEDGE_BASE'),
+    );
   }
 
   private getInteractionCollection(): Collection<AstraInteractionDocument> {
-    return this.getDb().collection<AstraInteractionDocument>(this.readRequiredConfig('ASTRA_COLLECTION_INTERACTIONS'));
+    return this.getDb().collection<AstraInteractionDocument>(
+      this.readRequiredConfig('ASTRA_COLLECTION_INTERACTIONS'),
+    );
   }
 
   private getDb() {
@@ -294,8 +354,8 @@ export class AstraRagService {
       readAstraDbConnectionConfig({
         endpoint: this.readRequiredConfig('ASTRA_DB_API_ENDPOINT'),
         token: this.readRequiredConfig('ASTRA_DB_APPLICATION_TOKEN'),
-        keyspace: this.configService.get<string>('ASTRA_DB_KEYSPACE')
-      })
+        keyspace: this.configService.get<string>('ASTRA_DB_KEYSPACE'),
+      }),
     );
 
     return db;
@@ -310,13 +370,17 @@ export class AstraRagService {
       return null;
     }
 
-    return [title, content, source ? `fonte:${source}` : null].filter((item): item is string => Boolean(item)).join(' | ');
+    return [title, content, source ? `fonte:${source}` : null]
+      .filter((item): item is string => Boolean(item))
+      .join(' | ');
   }
 
   private readRequiredConfig(key: string): string {
     const value = this.configService.get<string>(key)?.trim();
     if (!value) {
-      throw new ServiceUnavailableException(`Missing AstraDB configuration: ${key}`);
+      throw new ServiceUnavailableException(
+        `Missing AstraDB configuration: ${key}`,
+      );
     }
 
     return value;

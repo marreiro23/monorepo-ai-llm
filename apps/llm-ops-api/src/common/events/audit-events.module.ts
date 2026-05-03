@@ -5,6 +5,6 @@ import { AuditEventsService } from './audit-events.service.js';
 @Module({
   imports: [EventEmitterModule.forRoot()],
   providers: [AuditEventsService],
-  exports: [AuditEventsService]
+  exports: [AuditEventsService],
 })
 export class AuditEventsModule {}

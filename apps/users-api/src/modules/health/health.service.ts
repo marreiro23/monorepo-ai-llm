@@ -6,7 +6,7 @@ export class HealthService {
     return {
       success: true,
       status: 'ok',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 }

@@ -6,7 +6,7 @@ export class AdminService {
     return {
       domain: 'admin',
       status: 'planned',
-      success: true
+      success: true,
     };
   }
 }

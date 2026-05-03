@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Post, Query, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Param,
+} from '@nestjs/common';
 import type {
   AgentMutationResponseContract,
   AgentsListResponseContract,
@@ -21,7 +29,7 @@ import type {
   TopicFlowVersionMutationResponseContract,
   TopicFlowVersionsListResponseContract,
   TopicFlowVersionStatusResponseContract,
-  TopicInteractionMutationResponseContract
+  TopicInteractionMutationResponseContract,
 } from '@api-llm-embedded/shared';
 import { CreateAgentDto } from './dto/create-agent.dto.js';
 import { AskAndAnswerDto } from './dto/ask-and-answer.dto.js';
@@ -43,7 +51,7 @@ export class LlmOpsController {
   constructor(private readonly llmOpsService: LlmOpsService) {}
 
   @Get('resources/catalog')
-  getResourcesCatalog(): Promise<ResourceCatalogResponseContract> {
+  getResourcesCatalog(): ResourceCatalogResponseContract {
     return this.llmOpsService.getResourcesCatalog();
   }
 
@@ -53,12 +61,16 @@ export class LlmOpsController {
   }
 
   @Post('agents')
-  createAgent(@Body() payload: CreateAgentDto): Promise<AgentMutationResponseContract> {
+  createAgent(
+    @Body() payload: CreateAgentDto,
+  ): Promise<AgentMutationResponseContract> {
     return this.llmOpsService.createAgent(payload);
   }
 
   @Get('prompt-templates')
-  listPromptTemplates(@Query('agentId') agentId?: string): Promise<PromptTemplatesListResponseContract> {
+  listPromptTemplates(
+    @Query('agentId') agentId?: string,
+  ): Promise<PromptTemplatesListResponseContract> {
     if (agentId) {
       return this.llmOpsService.listPromptTemplatesByAgent(agentId);
     }
@@ -67,12 +79,16 @@ export class LlmOpsController {
   }
 
   @Post('prompt-templates')
-  createPromptTemplate(@Body() payload: CreatePromptTemplateDto): Promise<PromptTemplateMutationResponseContract> {
+  createPromptTemplate(
+    @Body() payload: CreatePromptTemplateDto,
+  ): Promise<PromptTemplateMutationResponseContract> {
     return this.llmOpsService.createPromptTemplate(payload);
   }
 
   @Get('prompt-versions')
-  listPromptVersions(@Query('promptTemplateId') promptTemplateId?: string): Promise<PromptVersionsListResponseContract> {
+  listPromptVersions(
+    @Query('promptTemplateId') promptTemplateId?: string,
+  ): Promise<PromptVersionsListResponseContract> {
     if (promptTemplateId) {
       return this.llmOpsService.listPromptVersionsByTemplate(promptTemplateId);
     }
@@ -81,20 +97,27 @@ export class LlmOpsController {
   }
 
   @Post('prompt-versions')
-  createPromptVersion(@Body() payload: CreatePromptVersionDto): Promise<PromptVersionMutationResponseContract> {
+  createPromptVersion(
+    @Body() payload: CreatePromptVersionDto,
+  ): Promise<PromptVersionMutationResponseContract> {
     return this.llmOpsService.createPromptVersion(payload);
   }
 
   @Patch('prompt-versions/:promptVersionId/status')
   updatePromptVersionStatus(
     @Param('promptVersionId') promptVersionId: string,
-    @Body() payload: UpdatePromptVersionStatusDto
+    @Body() payload: UpdatePromptVersionStatusDto,
   ): Promise<PromptVersionMutationResponseContract> {
-    return this.llmOpsService.updatePromptVersionStatus(promptVersionId, payload);
+    return this.llmOpsService.updatePromptVersionStatus(
+      promptVersionId,
+      payload,
+    );
   }
 
   @Get('prompt-versions/:promptVersionId/status')
-  getPromptVersionStatus(@Param('promptVersionId') promptVersionId: string): Promise<PromptVersionStatusResponseContract> {
+  getPromptVersionStatus(
+    @Param('promptVersionId') promptVersionId: string,
+  ): Promise<PromptVersionStatusResponseContract> {
     return this.llmOpsService.getPromptVersionStatus(promptVersionId);
   }
 
@@ -104,14 +127,16 @@ export class LlmOpsController {
   }
 
   @Post('prompt-validations')
-  createPromptValidation(@Body() payload: CreatePromptValidationDto): Promise<PromptValidationMutationResponseContract> {
+  createPromptValidation(
+    @Body() payload: CreatePromptValidationDto,
+  ): Promise<PromptValidationMutationResponseContract> {
     return this.llmOpsService.createPromptValidation(payload);
   }
 
   @Get('topic-flows')
   listTopicFlows(
     @Query('agentId') agentId?: string,
-    @Query('topicDomain') topicDomain?: string
+    @Query('topicDomain') topicDomain?: string,
   ): Promise<TopicFlowsListResponseContract> {
     if (agentId) {
       return this.llmOpsService.listTopicFlowsByAgent(agentId, topicDomain);
@@ -121,12 +146,16 @@ export class LlmOpsController {
   }
 
   @Post('topic-flows')
-  createTopicFlow(@Body() payload: CreateTopicFlowDto): Promise<TopicFlowMutationResponseContract> {
+  createTopicFlow(
+    @Body() payload: CreateTopicFlowDto,
+  ): Promise<TopicFlowMutationResponseContract> {
     return this.llmOpsService.createTopicFlow(payload);
   }
 
   @Get('topic-flow-versions')
-  listTopicFlowVersions(@Query('topicFlowId') topicFlowId?: string): Promise<TopicFlowVersionsListResponseContract> {
+  listTopicFlowVersions(
+    @Query('topicFlowId') topicFlowId?: string,
+  ): Promise<TopicFlowVersionsListResponseContract> {
     if (topicFlowId) {
       return this.llmOpsService.listTopicFlowVersionsByTopicFlow(topicFlowId);
     }
@@ -135,34 +164,47 @@ export class LlmOpsController {
   }
 
   @Post('topic-flow-versions')
-  createTopicFlowVersion(@Body() payload: CreateTopicFlowVersionDto): Promise<TopicFlowVersionMutationResponseContract> {
+  createTopicFlowVersion(
+    @Body() payload: CreateTopicFlowVersionDto,
+  ): Promise<TopicFlowVersionMutationResponseContract> {
     return this.llmOpsService.createTopicFlowVersion(payload);
   }
 
   @Patch('topic-flow-versions/:topicFlowVersionId/status')
   updateTopicFlowVersionStatus(
     @Param('topicFlowVersionId') topicFlowVersionId: string,
-    @Body() payload: UpdateTopicFlowVersionStatusDto
+    @Body() payload: UpdateTopicFlowVersionStatusDto,
   ): Promise<TopicFlowVersionMutationResponseContract> {
-    return this.llmOpsService.updateTopicFlowVersionStatus(topicFlowVersionId, payload);
+    return this.llmOpsService.updateTopicFlowVersionStatus(
+      topicFlowVersionId,
+      payload,
+    );
   }
 
   @Get('topic-flow-versions/:topicFlowVersionId/status')
-  getTopicFlowVersionStatus(@Param('topicFlowVersionId') topicFlowVersionId: string): Promise<TopicFlowVersionStatusResponseContract> {
+  getTopicFlowVersionStatus(
+    @Param('topicFlowVersionId') topicFlowVersionId: string,
+  ): Promise<TopicFlowVersionStatusResponseContract> {
     return this.llmOpsService.getTopicFlowVersionStatus(topicFlowVersionId);
   }
 
   @Get('prompt-usage-history')
-  listPromptUsageHistory(@Query('promptVersionId') promptVersionId?: string): Promise<PromptUsageHistoryListResponseContract> {
+  listPromptUsageHistory(
+    @Query('promptVersionId') promptVersionId?: string,
+  ): Promise<PromptUsageHistoryListResponseContract> {
     if (promptVersionId) {
-      return this.llmOpsService.listPromptUsageHistoryByPromptVersion(promptVersionId);
+      return this.llmOpsService.listPromptUsageHistoryByPromptVersion(
+        promptVersionId,
+      );
     }
 
     return this.llmOpsService.listPromptUsageHistory();
   }
 
   @Post('prompt-usage-history')
-  createPromptUsageHistory(@Body() payload: CreatePromptUsageHistoryDto): Promise<PromptUsageHistoryMutationResponseContract> {
+  createPromptUsageHistory(
+    @Body() payload: CreatePromptUsageHistoryDto,
+  ): Promise<PromptUsageHistoryMutationResponseContract> {
     return this.llmOpsService.createPromptUsageHistory(payload);
   }
 
@@ -173,30 +215,36 @@ export class LlmOpsController {
 
   @Post('interaction-learning-events')
   createInteractionLearningEvent(
-    @Body() payload: CreateInteractionLearningEventDto
+    @Body() payload: CreateInteractionLearningEventDto,
   ): Promise<InteractionLearningEventMutationResponseContract> {
     return this.llmOpsService.createInteractionLearningEvent(payload);
   }
 
   @Post('topic-interactions')
-  createTopicInteraction(@Body() payload: CreateTopicInteractionDto): Promise<TopicInteractionMutationResponseContract> {
+  createTopicInteraction(
+    @Body() payload: CreateTopicInteractionDto,
+  ): Promise<TopicInteractionMutationResponseContract> {
     return this.llmOpsService.createTopicInteraction(payload);
   }
 
   @Post('knowledge-base/documents')
-  ingestKnowledgeBase(@Body() payload: IngestKnowledgeBaseDto): Promise<{ success: true; data: { insertedIds: string[] } }> {
+  ingestKnowledgeBase(
+    @Body() payload: IngestKnowledgeBaseDto,
+  ): Promise<{ success: true; data: { insertedIds: string[] } }> {
     return this.llmOpsService.ingestKnowledgeBaseDocuments(payload);
   }
 
   @Get('prompt-usage-history/:promptUsageHistoryId/status')
   getPromptUsageHistoryStatus(
-    @Param('promptUsageHistoryId') promptUsageHistoryId: string
+    @Param('promptUsageHistoryId') promptUsageHistoryId: string,
   ): Promise<PromptUsageHistoryStatusResponseContract> {
     return this.llmOpsService.getPromptUsageHistoryStatus(promptUsageHistoryId);
   }
 
   @Post('chat')
-  askAndAnswer(@Body() payload: AskAndAnswerDto): Promise<AskAndAnswerResponseContract> {
+  askAndAnswer(
+    @Body() payload: AskAndAnswerDto,
+  ): Promise<AskAndAnswerResponseContract> {
     return this.llmOpsService.askAndAnswer(payload);
   }
 }

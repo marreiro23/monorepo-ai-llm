@@ -1,0 +1,21 @@
+{
+  "name": "@api-llm-embedded/mcp-secrets",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260428.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.json",
+    "start": "node dist/main.js",
+    "start:dev": "node --loader ts-node/esm src/main.ts"
+  }
+}

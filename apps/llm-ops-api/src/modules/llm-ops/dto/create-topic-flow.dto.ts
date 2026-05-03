@@ -1,10 +1,19 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type {
   CreateTopicFlowRequestContract,
   InvocationSourceContract,
-  TopicDomainContract
+  TopicDomainContract,
 } from '@api-llm-embedded/shared';
-import { InvocationSourceEnum, TopicDomainEnum } from '../entities/llm-ops.enums.js';
+import {
+  InvocationSourceEnum,
+  TopicDomainEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreateTopicFlowDto implements CreateTopicFlowRequestContract {
   @IsString()

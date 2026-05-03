@@ -1,10 +1,20 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type {
   CreatePromptUsageHistoryRequestContract,
   InvocationSourceContract,
-  RuntimeOutcomeContract
+  RuntimeOutcomeContract,
 } from '@api-llm-embedded/shared';
-import { InvocationSourceEnum, RuntimeOutcomeEnum } from '../entities/llm-ops.enums.js';
+import {
+  InvocationSourceEnum,
+  RuntimeOutcomeEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreatePromptUsageHistoryDto implements CreatePromptUsageHistoryRequestContract {
   @IsString()

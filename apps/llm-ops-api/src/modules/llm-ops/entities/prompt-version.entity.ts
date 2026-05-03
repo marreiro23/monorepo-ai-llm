@@ -1,9 +1,21 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { ApprovalStatusEnum, InvocationSourceEnum } from './llm-ops.enums.js';
 import { PromptTemplateEntity } from './prompt-template.entity.js';
 
 @Entity({ schema: 'llm_ops', name: 'prompt_versions' })
-@Unique('uq_prompt_version', ['promptTemplateId', 'versionNumber', 'invocationSource'])
+@Unique('uq_prompt_version', [
+  'promptTemplateId',
+  'versionNumber',
+  'invocationSource',
+])
 export class PromptVersionEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -18,10 +30,21 @@ export class PromptVersionEntity {
   @Column({ name: 'version_number', type: 'integer' })
   versionNumber!: number;
 
-  @Column({ name: 'invocation_source', type: 'enum', enum: InvocationSourceEnum, enumName: 'invocation_source' })
+  @Column({
+    name: 'invocation_source',
+    type: 'enum',
+    enum: InvocationSourceEnum,
+    enumName: 'invocation_source',
+  })
   invocationSource!: InvocationSourceEnum;
 
-  @Column({ name: 'approval_status', type: 'enum', enum: ApprovalStatusEnum, enumName: 'approval_status', default: ApprovalStatusEnum.DRAFT })
+  @Column({
+    name: 'approval_status',
+    type: 'enum',
+    enum: ApprovalStatusEnum,
+    enumName: 'approval_status',
+    default: ApprovalStatusEnum.DRAFT,
+  })
   approvalStatus!: ApprovalStatusEnum;
 
   @Column({ name: 'is_stable', type: 'boolean', default: false })
@@ -30,10 +53,18 @@ export class PromptVersionEntity {
   @Column({ name: 'content_markdown', type: 'text' })
   contentMarkdown!: string;
 
-  @Column({ name: 'input_contract', type: 'jsonb', default: () => "'{}'::jsonb" })
+  @Column({
+    name: 'input_contract',
+    type: 'jsonb',
+    default: () => "'{}'::jsonb",
+  })
   inputContract!: Record<string, unknown>;
 
-  @Column({ name: 'output_contract', type: 'jsonb', default: () => "'{}'::jsonb" })
+  @Column({
+    name: 'output_contract',
+    type: 'jsonb',
+    default: () => "'{}'::jsonb",
+  })
   outputContract!: Record<string, unknown>;
 
   @Column({ name: 'coherence_notes', type: 'text', nullable: true })

@@ -25,6 +25,8 @@ services:
         APP_NAME: monorepo-ai-llm
     image: monorepo-ai-llm/monorepo-ai-llm:remote
     container_name: monorepo-ai-llm
+    env_file:
+      - .env.remote
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -46,6 +48,8 @@ services:
         APP_NAME: users-api
     image: monorepo-ai-llm/users-api:remote
     container_name: users-api
+    env_file:
+      - .env.remote
     environment:
       NODE_ENV: production
       PORT: 3001
@@ -67,6 +71,8 @@ services:
         APP_NAME: llm-ops-api
     image: monorepo-ai-llm/llm-ops-api:remote
     container_name: llm-ops-api
+    env_file:
+      - .env.remote
     environment:
       NODE_ENV: production
       PORT: 3002
@@ -88,6 +94,8 @@ services:
         APP_NAME: sharepoint-api
     image: monorepo-ai-llm/sharepoint-api:remote
     container_name: sharepoint-api
+    env_file:
+      - .env.remote
     environment:
       NODE_ENV: production
       PORT: 3003
@@ -109,6 +117,8 @@ services:
         APP_NAME: sync-api
     image: monorepo-ai-llm/sync-api:remote
     container_name: sync-api
+    env_file:
+      - .env.remote
     environment:
       NODE_ENV: production
       PORT: 3004

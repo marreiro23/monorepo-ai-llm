@@ -3,19 +3,19 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 export enum ApiKeyOwnerType {
   INTERNAL = 'internal',
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
 }
 
 export enum ApiKeyStatus {
   ACTIVE = 'active',
   ROTATING = 'rotating',
   REVOKED = 'revoked',
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
 }
 
 @Entity({ schema: 'public', name: 'api_keys' })
@@ -47,7 +47,11 @@ export class ApiKeyEntity {
   @Column({ name: 'expires_at', type: 'timestamptz', nullable: true })
   expiresAt!: Date | null;
 
-  @Column({ name: 'scheduled_rotation_at', type: 'timestamptz', nullable: true })
+  @Column({
+    name: 'scheduled_rotation_at',
+    type: 'timestamptz',
+    nullable: true,
+  })
   scheduledRotationAt!: Date | null;
 
   @Column({ name: 'successor_key_id', type: 'uuid', nullable: true })

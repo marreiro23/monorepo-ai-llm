@@ -1,4 +1,10 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { InvocationSourceEnum } from './llm-ops.enums.js';
 
 @Entity({ schema: 'llm_ops', name: 'agents' })
@@ -23,7 +29,7 @@ export class LlmOpsAgentEntity {
     type: 'enum',
     enum: InvocationSourceEnum,
     enumName: 'invocation_source',
-    array: true
+    array: true,
   })
   supportedSources!: InvocationSourceEnum[];
 

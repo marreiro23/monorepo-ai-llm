@@ -12,9 +12,7 @@ type GovernancePermissionRecord = {
 
 @Injectable()
 export class GovernanceService {
-  constructor(
-    private readonly auditEventsService: AuditEventsService
-  ) {}
+  constructor(private readonly auditEventsService: AuditEventsService) {}
 
   private readonly permissionMatrix: GovernancePermissionRecord[] = [
     {
@@ -23,7 +21,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lista sites do tenant para descoberta inicial.'
+      rationale: 'Lista sites do tenant para descoberta inicial.',
     },
     {
       endpoint: '/graph/sites/:siteId',
@@ -31,7 +29,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Consulta metadados do site selecionado.'
+      rationale: 'Consulta metadados do site selecionado.',
     },
     {
       endpoint: '/graph/sites/:siteId/drives',
@@ -39,7 +37,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/drives',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lista bibliotecas e drives associados ao site.'
+      rationale: 'Lista bibliotecas e drives associados ao site.',
     },
     {
       endpoint: '/graph/sites/:siteId/permissions',
@@ -47,7 +45,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/permissions',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lê permissões efetivas do site para inspeção.'
+      rationale: 'Lê permissões efetivas do site para inspeção.',
     },
     {
       endpoint: '/graph/sites/:siteId/libraries',
@@ -55,7 +53,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lê listas e bibliotecas SharePoint do site.'
+      rationale: 'Lê listas e bibliotecas SharePoint do site.',
     },
     {
       endpoint: '/graph/sites/:siteId/libraries/:listId',
@@ -63,7 +61,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists/{listId}',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lê metadados detalhados de uma biblioteca.'
+      rationale: 'Lê metadados detalhados de uma biblioteca.',
     },
     {
       endpoint: '/graph/users',
@@ -71,7 +69,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/users',
       minimumScopes: ['User.Read.All'],
-      rationale: 'Lista usuários do diretório para seleção e lookup.'
+      rationale: 'Lista usuários do diretório para seleção e lookup.',
     },
     {
       endpoint: '/graph/groups',
@@ -79,7 +77,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/groups',
       minimumScopes: ['Group.Read.All'],
-      rationale: 'Lista grupos do diretório para associação e leitura.'
+      rationale: 'Lista grupos do diretório para associação e leitura.',
     },
     {
       endpoint: '/graph/drives/:driveId/root/permissions',
@@ -87,7 +85,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/root/permissions',
       minimumScopes: ['Files.Read.All'],
-      rationale: 'Lê permissões do item raiz do drive.'
+      rationale: 'Lê permissões do item raiz do drive.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items',
@@ -95,7 +93,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/root/children',
       minimumScopes: ['Files.Read.All'],
-      rationale: 'Lista arquivos e pastas do drive.'
+      rationale: 'Lista arquivos e pastas do drive.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:itemId',
@@ -103,7 +101,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{itemId}',
       minimumScopes: ['Files.Read.All'],
-      rationale: 'Lê um item específico do drive.'
+      rationale: 'Lê um item específico do drive.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:itemId/children',
@@ -111,7 +109,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{itemId}/children',
       minimumScopes: ['Files.Read.All'],
-      rationale: 'Lista filhos de uma pasta específica.'
+      rationale: 'Lista filhos de uma pasta específica.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:parentItemId/folders',
@@ -119,15 +117,17 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{parentItemId}/children',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Cria pasta no drive e exige escrita no conteúdo.'
+      rationale: 'Cria pasta no drive e exige escrita no conteúdo.',
     },
     {
-      endpoint: '/sharepoint/drives/:driveId/items/:parentItemId/files/:fileName',
+      endpoint:
+        '/sharepoint/drives/:driveId/items/:parentItemId/files/:fileName',
       method: 'POST',
       upstreamApi: 'graph',
-      upstreamPath: '/drives/{driveId}/items/{parentItemId}:/{fileName}:/content',
+      upstreamPath:
+        '/drives/{driveId}/items/{parentItemId}:/{fileName}:/content',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Faz upload de conteúdo binário em um drive.'
+      rationale: 'Faz upload de conteúdo binário em um drive.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:itemId',
@@ -135,7 +135,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{itemId}',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Atualiza metadados do drive item.'
+      rationale: 'Atualiza metadados do drive item.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:itemId',
@@ -143,7 +143,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{itemId}',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Remove item do drive e exige permissão de escrita.'
+      rationale: 'Remove item do drive e exige permissão de escrita.',
     },
     {
       endpoint: '/sharepoint/drives/:driveId/items/:itemId/invite',
@@ -151,15 +151,17 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/drives/{driveId}/items/{itemId}/invite',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Concede compartilhamento sobre item já existente.'
+      rationale: 'Concede compartilhamento sobre item já existente.',
     },
     {
-      endpoint: '/sharepoint/drives/:driveId/items/:itemId/permissions/:permissionId',
+      endpoint:
+        '/sharepoint/drives/:driveId/items/:itemId/permissions/:permissionId',
       method: 'DELETE',
       upstreamApi: 'graph',
-      upstreamPath: '/drives/{driveId}/items/{itemId}/permissions/{permissionId}',
+      upstreamPath:
+        '/drives/{driveId}/items/{itemId}/permissions/{permissionId}',
       minimumScopes: ['Files.ReadWrite.All'],
-      rationale: 'Revoga compartilhamento previamente criado.'
+      rationale: 'Revoga compartilhamento previamente criado.',
     },
     {
       endpoint: '/sharepoint/sites/:siteId/lists/:listId/items',
@@ -167,15 +169,16 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists/{listId}/items?expand=fields',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lê itens de lista com seus fields.'
+      rationale: 'Lê itens de lista com seus fields.',
     },
     {
       endpoint: '/sharepoint/sites/:siteId/lists/:listId/items/:itemId',
       method: 'GET',
       upstreamApi: 'graph',
-      upstreamPath: '/sites/{siteId}/lists/{listId}/items/{itemId}?expand=fields',
+      upstreamPath:
+        '/sites/{siteId}/lists/{listId}/items/{itemId}?expand=fields',
       minimumScopes: ['Sites.Read.All'],
-      rationale: 'Lê um item específico da lista.'
+      rationale: 'Lê um item específico da lista.',
     },
     {
       endpoint: '/sharepoint/sites/:siteId/lists/:listId/items',
@@ -183,7 +186,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists/{listId}/items',
       minimumScopes: ['Sites.ReadWrite.All'],
-      rationale: 'Cria item na lista e exige escrita no site.'
+      rationale: 'Cria item na lista e exige escrita no site.',
     },
     {
       endpoint: '/sharepoint/sites/:siteId/lists/:listId/items/:itemId',
@@ -191,7 +194,7 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists/{listId}/items/{itemId}/fields',
       minimumScopes: ['Sites.ReadWrite.All'],
-      rationale: 'Atualiza fields do item da lista.'
+      rationale: 'Atualiza fields do item da lista.',
     },
     {
       endpoint: '/sharepoint/sites/:siteId/lists/:listId/items/:itemId',
@@ -199,8 +202,8 @@ export class GovernanceService {
       upstreamApi: 'graph',
       upstreamPath: '/sites/{siteId}/lists/{listId}/items/{itemId}',
       minimumScopes: ['Sites.ReadWrite.All'],
-      rationale: 'Exclui item da lista.'
-    }
+      rationale: 'Exclui item da lista.',
+    },
   ];
 
   getStatus() {
@@ -208,7 +211,7 @@ export class GovernanceService {
       domain: 'governance',
       matrixEntries: this.permissionMatrix.length,
       status: 'active',
-      success: true
+      success: true,
     };
   }
 
@@ -217,13 +220,13 @@ export class GovernanceService {
     this.auditEventsService.emitMatrixAccess({
       accessType: 'read',
       details: {
-        totalEndpoints: this.permissionMatrix.length
-      }
+        totalEndpoints: this.permissionMatrix.length,
+      },
     });
 
     return {
       success: true,
-      data: this.permissionMatrix
+      data: this.permissionMatrix,
     };
   }
 
@@ -250,8 +253,8 @@ export class GovernanceService {
         checkedAt: new Date().toISOString(),
         invalidRecords,
         valid: invalidRecords.length === 0,
-        validatedEndpoints: this.permissionMatrix.length
-      }
+        validatedEndpoints: this.permissionMatrix.length,
+      },
     };
 
     // Registra validação de permissões
@@ -260,8 +263,8 @@ export class GovernanceService {
       invalidRecords: invalidRecords.length,
       result: invalidRecords.length === 0 ? 'success' : 'failure',
       details: {
-        invalidEndpoints: invalidRecords.map(r => r.endpoint)
-      }
+        invalidEndpoints: invalidRecords.map((r) => r.endpoint),
+      },
     });
 
     return result;
@@ -269,20 +272,25 @@ export class GovernanceService {
 
   getOpenApiPermissionsReport() {
     // Agrupa endpoints por domínio
-    const byDomain = this.permissionMatrix.reduce((acc, record) => {
-      const domain = record.endpoint.split('/')[1] || 'unknown'; // Extrai 'graph' ou 'sharepoint'
-      if (!acc[domain]) {
-        acc[domain] = [];
-      }
-      acc[domain].push(record);
-      return acc;
-    }, {} as Record<string, GovernancePermissionRecord[]>);
+    const byDomain = this.permissionMatrix.reduce(
+      (acc, record) => {
+        const domain = record.endpoint.split('/')[1] || 'unknown'; // Extrai 'graph' ou 'sharepoint'
+        if (!acc[domain]) {
+          acc[domain] = [];
+        }
+        acc[domain].push(record);
+        return acc;
+      },
+      {} as Record<string, GovernancePermissionRecord[]>,
+    );
 
     // Gera estatísticas por domínio
     const domainStats = Object.entries(byDomain).map(([domain, records]) => {
-      const readOps = records.filter(r => r.method === 'GET').length;
-      const writeOps = records.filter(r => r.method !== 'GET').length;
-      const uniqueScopes = [...new Set(records.flatMap(r => r.minimumScopes))];
+      const readOps = records.filter((r) => r.method === 'GET').length;
+      const writeOps = records.filter((r) => r.method !== 'GET').length;
+      const uniqueScopes = [
+        ...new Set(records.flatMap((r) => r.minimumScopes)),
+      ];
 
       return {
         domain,
@@ -291,21 +299,23 @@ export class GovernanceService {
         writeOperations: writeOps,
         uniqueScopes: uniqueScopes.length,
         scopes: uniqueScopes,
-        endpoints: records.map(r => ({
+        endpoints: records.map((r) => ({
           path: r.endpoint,
           method: r.method,
           upstreamPath: r.upstreamPath,
           scopes: r.minimumScopes,
-          rationale: r.rationale
-        }))
+          rationale: r.rationale,
+        })),
       };
     });
 
     // Análise de conformidade
-    const conformanceIssues = this.permissionMatrix.filter(record => {
+    const conformanceIssues = this.permissionMatrix.filter((record) => {
       // Verifica se operações de escrita usam ReadWrite
       if (record.method !== 'GET') {
-        return !record.minimumScopes.some(scope => scope.includes('ReadWrite'));
+        return !record.minimumScopes.some((scope) =>
+          scope.includes('ReadWrite'),
+        );
       }
       return false;
     });
@@ -317,26 +327,28 @@ export class GovernanceService {
         summary: {
           totalEndpoints: this.permissionMatrix.length,
           totalDomains: Object.keys(byDomain).length,
-          totalUniqueScopes: [...new Set(this.permissionMatrix.flatMap(r => r.minimumScopes))].length,
-          conformanceIssues: conformanceIssues.length
+          totalUniqueScopes: [
+            ...new Set(this.permissionMatrix.flatMap((r) => r.minimumScopes)),
+          ].length,
+          conformanceIssues: conformanceIssues.length,
         },
         domains: domainStats,
         conformance: {
           valid: conformanceIssues.length === 0,
-          issues: conformanceIssues.map(r => ({
+          issues: conformanceIssues.map((r) => ({
             endpoint: r.endpoint,
             method: r.method,
             issue: 'Write operation without ReadWrite scope',
-            currentScopes: r.minimumScopes
-          }))
+            currentScopes: r.minimumScopes,
+          })),
         },
         recommendations: [
           'Revisar endpoints com permissões amplas (.All) para possível redução de escopo',
           'Considerar delegated permissions para operações específicas de usuário',
           'Implementar cache de tokens para reduzir chamadas de autenticação',
-          'Adicionar rate limiting por scope para proteção adicional'
-        ]
-      }
+          'Adicionar rate limiting por scope para proteção adicional',
+        ],
+      },
     };
   }
 }

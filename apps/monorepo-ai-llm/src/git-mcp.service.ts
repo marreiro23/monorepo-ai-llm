@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { spawnSync } from 'node:child_process';
 
 export interface GitPushRequest {
@@ -32,7 +36,10 @@ export class GitMcpService {
     const porcelain = this.run('git', ['status', '--porcelain']);
     this.assertSuccess(porcelain, 'Falha ao obter status do repositorio');
 
-    const lines = porcelain.stdout.split('\n').map((line) => line.trimEnd()).filter(Boolean);
+    const lines = porcelain.stdout
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .filter(Boolean);
     const staged = lines.filter((line) => line[0] && line[0] !== ' ').length;
     const unstaged = lines.filter((line) => line[1] && line[1] !== ' ').length;
     const untracked = lines.filter((line) => line.startsWith('??')).length;
@@ -70,7 +77,10 @@ export class GitMcpService {
 
     const stagedCheck = this.run('git', ['diff', '--cached', '--name-only']);
     this.assertSuccess(stagedCheck, 'Falha ao validar arquivos staged');
-    const stagedFiles = stagedCheck.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
+    const stagedFiles = stagedCheck.stdout
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
 
     if (stagedFiles.length === 0) {
       throw new BadRequestException('Nao ha arquivos staged para commit');
@@ -108,7 +118,10 @@ export class GitMcpService {
       ok: true,
       remote,
       branch,
-      output: [pushResult.stdout, pushResult.stderr].filter(Boolean).join('\n').trim(),
+      output: [pushResult.stdout, pushResult.stderr]
+        .filter(Boolean)
+        .join('\n')
+        .trim(),
     };
   }
 
@@ -116,14 +129,23 @@ export class GitMcpService {
     this.ensureGhAvailable();
 
     const targetBranch = (branch || this.currentBranch()).trim();
-    const result = this.run('gh', ['pr', 'list', '--head', targetBranch, '--json', 'number,title,url,state,headRefName,baseRefName']);
+    const result = this.run('gh', [
+      'pr',
+      'list',
+      '--head',
+      targetBranch,
+      '--json',
+      'number,title,url,state,headRefName,baseRefName',
+    ]);
     this.assertSuccess(result, 'Falha ao consultar PRs via gh CLI');
 
     let prs: Array<Record<string, unknown>> = [];
     try {
       prs = JSON.parse(result.stdout || '[]') as Array<Record<string, unknown>>;
     } catch {
-      throw new InternalServerErrorException('Falha ao interpretar resposta JSON do gh pr list');
+      throw new InternalServerErrorException(
+        'Falha ao interpretar resposta JSON do gh pr list',
+      );
     }
 
     return {
@@ -146,7 +168,16 @@ export class GitMcpService {
     const head = (request.head || this.currentBranch()).trim();
     const body = (request.body || '').trim();
 
-    const args = ['pr', 'create', '--base', base, '--head', head, '--title', title];
+    const args = [
+      'pr',
+      'create',
+      '--base',
+      base,
+      '--head',
+      head,
+      '--title',
+      title,
+    ];
     if (body) {
       args.push('--body', body);
     } else {
@@ -169,7 +200,10 @@ export class GitMcpService {
       base,
       head,
       url: url || null,
-      output: [createResult.stdout, createResult.stderr].filter(Boolean).join('\n').trim(),
+      output: [createResult.stdout, createResult.stderr]
+        .filter(Boolean)
+        .join('\n')
+        .trim(),
     };
   }
 
@@ -186,12 +220,16 @@ export class GitMcpService {
   private ensureGhAvailable() {
     const ghVersion = this.run('gh', ['--version']);
     if (ghVersion.status !== 0) {
-      throw new BadRequestException('GitHub CLI (gh) nao encontrado no ambiente');
+      throw new BadRequestException(
+        'GitHub CLI (gh) nao encontrado no ambiente',
+      );
     }
 
     const auth = this.run('gh', ['auth', 'status']);
     if (auth.status !== 0) {
-      throw new BadRequestException('gh nao autenticado. Execute gh auth login no servidor');
+      throw new BadRequestException(
+        'gh nao autenticado. Execute gh auth login no servidor',
+      );
     }
   }
 

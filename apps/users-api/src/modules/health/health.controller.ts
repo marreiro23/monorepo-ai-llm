@@ -10,7 +10,7 @@ export class HealthController {
   @Get()
   @ApiOperation({
     summary: 'Health check da API',
-    description: 'Verifica o status de saúde da API e suas dependências'
+    description: 'Verifica o status de saúde da API e suas dependências',
   })
   @ApiResponse({
     status: 200,
@@ -20,9 +20,9 @@ export class HealthController {
       properties: {
         status: { type: 'string', example: 'ok' },
         timestamp: { type: 'string', format: 'date-time' },
-        uptime: { type: 'number', example: 12345 }
-      }
-    }
+        uptime: { type: 'number', example: 12345 },
+      },
+    },
   })
   check() {
     return this.healthService.check();

@@ -1,10 +1,21 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type {
   ApprovalStatusContract,
   CreatePromptVersionRequestContract,
-  InvocationSourceContract
+  InvocationSourceContract,
 } from '@api-llm-embedded/shared';
-import { ApprovalStatusEnum, InvocationSourceEnum } from '../entities/llm-ops.enums.js';
+import {
+  ApprovalStatusEnum,
+  InvocationSourceEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreatePromptVersionDto implements CreatePromptVersionRequestContract {
   @IsString()

@@ -7,6 +7,6 @@ import { AuditEventsModule } from '../../common/events/audit-events.module.js';
   imports: [AuditEventsModule],
   controllers: [GovernanceController],
   providers: [GovernanceService],
-  exports: [GovernanceService]
+  exports: [GovernanceService],
 })
 export class GovernanceModule {}

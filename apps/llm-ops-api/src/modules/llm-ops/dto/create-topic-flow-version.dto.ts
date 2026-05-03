@@ -1,10 +1,20 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type {
   ApprovalStatusContract,
   CreateTopicFlowVersionRequestContract,
-  RegressionStatusContract
+  RegressionStatusContract,
 } from '@api-llm-embedded/shared';
-import { ApprovalStatusEnum, RegressionStatusEnum } from '../entities/llm-ops.enums.js';
+import {
+  ApprovalStatusEnum,
+  RegressionStatusEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class CreateTopicFlowVersionDto implements CreateTopicFlowVersionRequestContract {
   @IsString()

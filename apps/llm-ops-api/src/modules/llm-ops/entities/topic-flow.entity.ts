@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { LlmOpsAgentEntity } from './llm-ops-agent.entity.js';
 import { InvocationSourceEnum, TopicDomainEnum } from './llm-ops.enums.js';
 
@@ -23,10 +31,20 @@ export class TopicFlowEntity {
   @Column({ type: 'text' })
   description!: string;
 
-  @Column({ name: 'topic_domain', type: 'enum', enum: TopicDomainEnum, enumName: 'topic_domain' })
+  @Column({
+    name: 'topic_domain',
+    type: 'enum',
+    enum: TopicDomainEnum,
+    enumName: 'topic_domain',
+  })
   topicDomain!: TopicDomainEnum;
 
-  @Column({ name: 'invocation_source', type: 'enum', enum: InvocationSourceEnum, enumName: 'invocation_source' })
+  @Column({
+    name: 'invocation_source',
+    type: 'enum',
+    enum: InvocationSourceEnum,
+    enumName: 'invocation_source',
+  })
   invocationSource!: InvocationSourceEnum;
 
   @Column({ name: 'is_active', type: 'boolean', default: true })

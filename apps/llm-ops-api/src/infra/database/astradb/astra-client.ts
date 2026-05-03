@@ -12,7 +12,9 @@ export type AstraDbConnectionConfig = {
   keyspace: string;
 };
 
-export function readAstraDbConnectionConfig(input: AstraDbConnectionInput): AstraDbConnectionConfig {
+export function readAstraDbConnectionConfig(
+  input: AstraDbConnectionInput,
+): AstraDbConnectionConfig {
   const endpoint = input.endpoint?.trim();
   const token = input.token?.trim();
   const keyspace = input.keyspace?.trim() || 'llm_ops';
@@ -22,13 +24,15 @@ export function readAstraDbConnectionConfig(input: AstraDbConnectionInput): Astr
   }
 
   if (!token) {
-    throw new Error('Missing AstraDB configuration: ASTRA_DB_APPLICATION_TOKEN');
+    throw new Error(
+      'Missing AstraDB configuration: ASTRA_DB_APPLICATION_TOKEN',
+    );
   }
 
   return {
     endpoint: endpoint.replace(/\/$/, ''),
     token,
-    keyspace
+    keyspace,
   };
 }
 
@@ -36,13 +40,13 @@ export function createAstraDbConnection(config: AstraDbConnectionConfig) {
   const client = new DataAPIClient();
   const db = client.db(config.endpoint, {
     token: config.token,
-    keyspace: config.keyspace
+    keyspace: config.keyspace,
   });
 
   return {
     client,
     db,
     endpoint: config.endpoint,
-    keyspace: config.keyspace
+    keyspace: config.keyspace,
   };
 }

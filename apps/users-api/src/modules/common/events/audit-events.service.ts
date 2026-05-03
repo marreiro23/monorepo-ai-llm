@@ -30,7 +30,9 @@ export class AuditEventsService {
     );
   }
 
-  emitPermissionCheck(payload: AuditEventPayload & { scopes?: string[] }): void {
+  emitPermissionCheck(
+    payload: AuditEventPayload & { scopes?: string[] },
+  ): void {
     this.logger.log(
       `permission_check endpoint=${payload.endpoint} method=${payload.method} result=${payload.result}`,
       payload,

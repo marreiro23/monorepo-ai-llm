@@ -1,6 +1,9 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { GitMcpService } from './git-mcp.service';
-import type { GitPushRequest, PullRequestCreateRequest } from './git-mcp.service';
+import type {
+  GitPushRequest,
+  PullRequestCreateRequest,
+} from './git-mcp.service';
 
 @Controller('mcp/git')
 export class GitMcpController {

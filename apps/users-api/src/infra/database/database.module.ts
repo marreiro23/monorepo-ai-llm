@@ -12,10 +12,11 @@ export class DatabaseModule {
         TypeOrmModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: (configService: ConfigService) => buildTypeOrmOptions(configService)
-        })
+          useFactory: (configService: ConfigService) =>
+            buildTypeOrmOptions(configService),
+        }),
       ],
-      exports: [TypeOrmModule]
+      exports: [TypeOrmModule],
     };
   }
 }

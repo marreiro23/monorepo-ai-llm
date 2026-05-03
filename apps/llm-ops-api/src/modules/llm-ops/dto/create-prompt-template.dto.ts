@@ -1,4 +1,10 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { PromptKindEnum } from '../entities/llm-ops.enums.js';
 
 export class CreatePromptTemplateDto {

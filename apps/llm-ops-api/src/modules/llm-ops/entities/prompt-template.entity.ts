@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { LlmOpsAgentEntity } from './llm-ops-agent.entity.js';
 import { PromptKindEnum } from './llm-ops.enums.js';
 
@@ -23,7 +31,12 @@ export class PromptTemplateEntity {
   @Column({ type: 'text' })
   description!: string;
 
-  @Column({ name: 'prompt_kind', type: 'enum', enum: PromptKindEnum, enumName: 'prompt_kind' })
+  @Column({
+    name: 'prompt_kind',
+    type: 'enum',
+    enum: PromptKindEnum,
+    enumName: 'prompt_kind',
+  })
   promptKind!: PromptKindEnum;
 
   @Column({ name: 'target_scope', type: 'text' })

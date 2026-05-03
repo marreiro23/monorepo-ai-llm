@@ -24,7 +24,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     AuthModule,
   ],
-  controllers: [AppController, HealthController, MermaidMcpController, GitMcpController],
+  controllers: [
+    AppController,
+    HealthController,
+    MermaidMcpController,
+    GitMcpController,
+  ],
   providers: [AppService, MermaidMcpService, GitMcpService],
 })
 export class AppModule {}

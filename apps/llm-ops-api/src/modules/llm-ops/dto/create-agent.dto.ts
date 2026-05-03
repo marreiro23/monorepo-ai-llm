@@ -1,4 +1,11 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { InvocationSourceEnum } from '../entities/llm-ops.enums.js';
 
 export class CreateAgentDto {

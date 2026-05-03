@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ValidationStatusEnum } from './llm-ops.enums.js';
 import { PromptVersionEntity } from './prompt-version.entity.js';
 
@@ -20,7 +27,12 @@ export class PromptValidationEntity {
   @Column({ name: 'validator_phase', type: 'text' })
   validatorPhase!: string;
 
-  @Column({ name: 'validation_status', type: 'enum', enum: ValidationStatusEnum, enumName: 'validation_status' })
+  @Column({
+    name: 'validation_status',
+    type: 'enum',
+    enum: ValidationStatusEnum,
+    enumName: 'validation_status',
+  })
   validationStatus!: ValidationStatusEnum;
 
   @Column({ name: 'critical_ambiguity_count', type: 'integer', default: 0 })
@@ -29,7 +41,13 @@ export class PromptValidationEntity {
   @Column({ name: 'warning_count', type: 'integer', default: 0 })
   warningCount!: number;
 
-  @Column({ name: 'coherence_score', type: 'numeric', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'coherence_score',
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   coherenceScore!: string | null;
 
   @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })

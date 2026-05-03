@@ -11,7 +11,9 @@ describe('SharepointApiController', () => {
       providers: [SharepointApiService],
     }).compile();
 
-    sharepointApiController = app.get<SharepointApiController>(SharepointApiController);
+    sharepointApiController = app.get<SharepointApiController>(
+      SharepointApiController,
+    );
   });
 
   describe('root', () => {

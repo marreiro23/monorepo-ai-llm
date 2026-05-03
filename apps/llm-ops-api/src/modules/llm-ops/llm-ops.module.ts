@@ -15,11 +15,11 @@ import {
   PromptValidationEntity,
   PromptVersionEntity,
   TopicFlowEntity,
-  TopicFlowVersionEntity
+  TopicFlowVersionEntity,
 } from './entities/index.js';
 import {
   buildLlmOpsTypeOrmOptions,
-  LLM_OPS_DATABASE_CONNECTION_NAME
+  LLM_OPS_DATABASE_CONNECTION_NAME,
 } from '../../infra/database/typeorm.config.js';
 
 const llmOpsEntities = [
@@ -31,7 +31,7 @@ const llmOpsEntities = [
   TopicFlowVersionEntity,
   PromptDependencyEntity,
   InteractionLearningEventEntity,
-  PromptUsageHistoryEntity
+  PromptUsageHistoryEntity,
 ];
 
 @Module({})
@@ -44,13 +44,22 @@ export class LlmOpsModule {
           imports: [ConfigModule],
           inject: [ConfigService],
           name: LLM_OPS_DATABASE_CONNECTION_NAME,
-          useFactory: (configService: ConfigService) => buildLlmOpsTypeOrmOptions(configService)
+          useFactory: (configService: ConfigService) =>
+            buildLlmOpsTypeOrmOptions(configService),
         }),
-        TypeOrmModule.forFeature(llmOpsEntities, LLM_OPS_DATABASE_CONNECTION_NAME)
+        TypeOrmModule.forFeature(
+          llmOpsEntities,
+          LLM_OPS_DATABASE_CONNECTION_NAME,
+        ),
       ],
       controllers: [LlmOpsController],
-      providers: [LlmOpsService, AstraRagService, LangflowClientService, ResourceReadonlyAdapterService],
-      exports: [TypeOrmModule]
+      providers: [
+        LlmOpsService,
+        AstraRagService,
+        LangflowClientService,
+        ResourceReadonlyAdapterService,
+      ],
+      exports: [TypeOrmModule],
     };
   }
 }

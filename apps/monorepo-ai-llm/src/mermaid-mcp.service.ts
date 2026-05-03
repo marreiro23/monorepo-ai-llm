@@ -6,11 +6,18 @@ import { spawnSync } from 'node:child_process';
 @Injectable()
 export class MermaidMcpService {
   private readonly repoRoot = process.cwd();
-  private readonly scriptPath = join(this.repoRoot, 'tools', 'mcp', 'ensure-mermaid-domains.mjs');
+  private readonly scriptPath = join(
+    this.repoRoot,
+    'tools',
+    'mcp',
+    'ensure-mermaid-domains.mjs',
+  );
 
   sync(domain?: string) {
     if (!existsSync(this.scriptPath)) {
-      throw new InternalServerErrorException(`Script MCP nao encontrado em ${this.scriptPath}`);
+      throw new InternalServerErrorException(
+        `Script MCP nao encontrado em ${this.scriptPath}`,
+      );
     }
 
     const args = [this.scriptPath];

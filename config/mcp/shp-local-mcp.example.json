@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "api-llm-embedded-llm-ops": {
+      "command": "npm",
+      "args": ["run", "mcp:llm-ops:start"],
+      "cwd": "C:\\workdir\\api-llm-embedded",
+      "env": {
+        "LLM_OPS_API_URL": "http://localhost:3002"
+      }
+    },
+    "api-llm-embedded-users": {
+      "command": "npm",
+      "args": ["run", "mcp:users:start"],
+      "cwd": "C:\\workdir\\api-llm-embedded",
+      "env": {
+        "USERS_API_URL": "http://localhost:3001"
+      }
+    },
+    "api-llm-embedded-sync": {
+      "command": "npm",
+      "args": ["run", "mcp:sync:start"],
+      "cwd": "C:\\workdir\\api-llm-embedded",
+      "env": {
+        "SYNC_API_URL": "http://localhost:3004"
+      }
+    },
+    "api-llm-embedded-secrets": {
+      "command": "npm",
+      "args": ["run", "mcp:secrets:start"],
+      "cwd": "C:\\workdir\\api-llm-embedded"
+    },
+    "api-llm-embedded-project-health": {
+      "command": "node",
+      "args": ["tools/mcp-project-health/dist/main.js"],
+      "cwd": "C:\\workdir\\api-llm-embedded",
+      "env": {
+        "REPO_ROOT": "C:\\workdir\\api-llm-embedded"
+      }
+    }
+  }
+}

@@ -2,9 +2,12 @@ import { IsDateString, IsEnum, IsOptional } from 'class-validator';
 import type {
   ApprovalStatusContract,
   RegressionStatusContract,
-  UpdateTopicFlowVersionStatusRequestContract
+  UpdateTopicFlowVersionStatusRequestContract,
 } from '@api-llm-embedded/shared';
-import { ApprovalStatusEnum, RegressionStatusEnum } from '../entities/llm-ops.enums.js';
+import {
+  ApprovalStatusEnum,
+  RegressionStatusEnum,
+} from '../entities/llm-ops.enums.js';
 
 export class UpdateTopicFlowVersionStatusDto implements UpdateTopicFlowVersionStatusRequestContract {
   @IsEnum(ApprovalStatusEnum)

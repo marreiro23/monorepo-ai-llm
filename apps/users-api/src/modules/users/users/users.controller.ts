@@ -1,9 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import type {
   UserByIdResponseContract,
   UserDeleteResponseContract,
   UserMutationResponseContract,
-  UsersListResponseContract
+  UsersListResponseContract,
 } from '@api-llm-embedded/shared';
 import { UsersService } from './users.service.js';
 import type { CreateUserDto } from './dto/create-user.dto.js';
@@ -14,7 +22,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() payload: CreateUserDto): Promise<UserMutationResponseContract> {
+  create(
+    @Body() payload: CreateUserDto,
+  ): Promise<UserMutationResponseContract> {
     return this.usersService.createUser(payload);
   }
 
@@ -29,7 +39,10 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() payload: UpdateUserDto): Promise<UserMutationResponseContract | UserByIdResponseContract> {
+  update(
+    @Param('id') id: string,
+    @Body() payload: UpdateUserDto,
+  ): Promise<UserMutationResponseContract | UserByIdResponseContract> {
     return this.usersService.updateUser(id, payload);
   }
 

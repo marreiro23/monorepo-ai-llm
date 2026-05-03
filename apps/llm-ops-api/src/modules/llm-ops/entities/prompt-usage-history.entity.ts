@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { LlmOpsAgentEntity } from './llm-ops-agent.entity.js';
 import { InvocationSourceEnum, RuntimeOutcomeEnum } from './llm-ops.enums.js';
 import { PromptVersionEntity } from './prompt-version.entity.js';
@@ -30,10 +37,20 @@ export class PromptUsageHistoryEntity {
   @Column({ name: 'topic_flow_version_id', type: 'uuid', nullable: true })
   topicFlowVersionId!: string | null;
 
-  @Column({ name: 'invocation_source', type: 'enum', enum: InvocationSourceEnum, enumName: 'invocation_source' })
+  @Column({
+    name: 'invocation_source',
+    type: 'enum',
+    enum: InvocationSourceEnum,
+    enumName: 'invocation_source',
+  })
   invocationSource!: InvocationSourceEnum;
 
-  @Column({ name: 'runtime_outcome', type: 'enum', enum: RuntimeOutcomeEnum, enumName: 'runtime_outcome' })
+  @Column({
+    name: 'runtime_outcome',
+    type: 'enum',
+    enum: RuntimeOutcomeEnum,
+    enumName: 'runtime_outcome',
+  })
   runtimeOutcome!: RuntimeOutcomeEnum;
 
   @Column({ name: 'adaptation_required', type: 'boolean', default: false })

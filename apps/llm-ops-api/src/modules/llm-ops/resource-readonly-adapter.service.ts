@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { AskAndAnswerResourceContextContract, LlmOpsResourceCatalogContract } from '@api-llm-embedded/shared';
-import { RESOURCE_CATALOG, RESOURCE_EXECUTION_MODE, type ResourceIntent } from './resource-catalog.js';
+import type {
+  AskAndAnswerResourceContextContract,
+  LlmOpsResourceCatalogContract,
+} from '@api-llm-embedded/shared';
+import {
+  RESOURCE_CATALOG,
+  RESOURCE_EXECUTION_MODE,
+  type ResourceIntent,
+} from './resource-catalog.js';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -16,11 +23,13 @@ export class ResourceReadonlyAdapterService {
   getCatalog(): LlmOpsResourceCatalogContract {
     return {
       executionMode: RESOURCE_EXECUTION_MODE,
-      resources: RESOURCE_CATALOG
+      resources: RESOURCE_CATALOG,
     };
   }
 
-  async fetchResourceContext(intent: ResourceIntent): Promise<AskAndAnswerResourceContextContract> {
+  async fetchResourceContext(
+    intent: ResourceIntent,
+  ): Promise<AskAndAnswerResourceContextContract> {
     const snapshot = await this.fetchDomainSnapshot(intent.domain);
 
     return {
@@ -28,7 +37,7 @@ export class ResourceReadonlyAdapterService {
       resource: intent.resource,
       consultedEndpoint: snapshot.consultedEndpoint,
       summary: snapshot.summary,
-      snapshot: snapshot.payload
+      snapshot: snapshot.payload,
     };
   }
 
@@ -41,11 +50,17 @@ export class ResourceReadonlyAdapterService {
       case 'users':
         return this.fetchSimpleList('/users', 'users');
       case 'graph':
-        return this.fetchSimpleObject('/graph/auth/status', 'graph-auth-status');
+        return this.fetchSimpleObject(
+          '/graph/auth/status',
+          'graph-auth-status',
+        );
       case 'sync':
         return this.fetchSimpleList('/sync/jobs', 'sync-jobs');
       case 'governance':
-        return this.fetchSimpleObject('/governance/permissions/validation', 'governance-validation');
+        return this.fetchSimpleObject(
+          '/governance/permissions/validation',
+          'governance-validation',
+        );
       case 'audit':
         return this.fetchSimpleObject('/audit/stats', 'audit-stats');
       case 'llm-ops':
@@ -56,7 +71,7 @@ export class ResourceReadonlyAdapterService {
         return {
           consultedEndpoint: null,
           summary: 'Domínio sem adaptador de snapshot.',
-          payload: null
+          payload: null,
         };
     }
   }
@@ -66,39 +81,56 @@ export class ResourceReadonlyAdapterService {
     summary: string;
     payload: Record<string, unknown> | null;
   }> {
-    const response = await this.fetchJson<ApiResponse<Array<Record<string, unknown>>>>('/governance/permissions/matrix');
-    if (!response.ok || !response.body?.success || !Array.isArray(response.body.data)) {
+    const response = await this.fetchJson<
+      ApiResponse<Array<Record<string, unknown>>>
+    >('/governance/permissions/matrix');
+    if (
+      !response.ok ||
+      !response.body?.success ||
+      !Array.isArray(response.body.data)
+    ) {
       return {
         consultedEndpoint: '/governance/permissions/matrix',
-        summary: 'SharePoint snapshot indisponível; use siteId/listId/driveId para consulta detalhada.',
-        payload: null
+        summary:
+          'SharePoint snapshot indisponível; use siteId/listId/driveId para consulta detalhada.',
+        payload: null,
       };
     }
 
-    const sharePointRows = response.body.data.filter((row) =>
-      typeof row?.endpoint === 'string' && row.endpoint.startsWith('/sharepoint')
+    const sharePointRows = response.body.data.filter(
+      (row) =>
+        typeof row?.endpoint === 'string' &&
+        row.endpoint.startsWith('/sharepoint'),
     );
 
     return {
       consultedEndpoint: '/governance/permissions/matrix',
       summary: `SharePoint possui ${sharePointRows.length} endpoints mapeados na matriz de permissões.`,
       payload: {
-        endpointsMapped: sharePointRows.length
-      }
+        endpointsMapped: sharePointRows.length,
+      },
     };
   }
 
-  private async fetchSimpleList(path: string, label: string): Promise<{
+  private async fetchSimpleList(
+    path: string,
+    label: string,
+  ): Promise<{
     consultedEndpoint: string;
     summary: string;
     payload: Record<string, unknown> | null;
   }> {
-    const response = await this.fetchJson<ApiResponse<Array<Record<string, unknown>>>>(path);
-    if (!response.ok || !response.body?.success || !Array.isArray(response.body.data)) {
+    const response =
+      await this.fetchJson<ApiResponse<Array<Record<string, unknown>>>>(path);
+    if (
+      !response.ok ||
+      !response.body?.success ||
+      !Array.isArray(response.body.data)
+    ) {
       return {
         consultedEndpoint: path,
         summary: `Snapshot de ${label} indisponível no momento; manter recomendação read-only.`,
-        payload: null
+        payload: null,
       };
     }
 
@@ -106,33 +138,44 @@ export class ResourceReadonlyAdapterService {
       consultedEndpoint: path,
       summary: `Snapshot de ${label} disponível com ${response.body.data.length} registro(s).`,
       payload: {
-        count: response.body.data.length
-      }
+        count: response.body.data.length,
+      },
     };
   }
 
-  private async fetchSimpleObject(path: string, label: string): Promise<{
+  private async fetchSimpleObject(
+    path: string,
+    label: string,
+  ): Promise<{
     consultedEndpoint: string;
     summary: string;
     payload: Record<string, unknown> | null;
   }> {
-    const response = await this.fetchJson<ApiResponse<Record<string, unknown>>>(path);
-    if (!response.ok || !response.body?.success || !response.body.data || typeof response.body.data !== 'object') {
+    const response =
+      await this.fetchJson<ApiResponse<Record<string, unknown>>>(path);
+    if (
+      !response.ok ||
+      !response.body?.success ||
+      !response.body.data ||
+      typeof response.body.data !== 'object'
+    ) {
       return {
         consultedEndpoint: path,
         summary: `Snapshot de ${label} indisponível no momento; manter recomendação read-only.`,
-        payload: null
+        payload: null,
       };
     }
 
     return {
       consultedEndpoint: path,
       summary: `Snapshot de ${label} coletado com sucesso.`,
-      payload: response.body.data
+      payload: response.body.data,
     };
   }
 
-  private async fetchJson<T>(path: string): Promise<{ ok: boolean; body: T | null }> {
+  private async fetchJson<T>(
+    path: string,
+  ): Promise<{ ok: boolean; body: T | null }> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 2500);
 
@@ -140,7 +183,7 @@ export class ResourceReadonlyAdapterService {
       const response = await fetch(`${this.readApiBaseUrl()}${path}`, {
         method: 'GET',
         headers: { accept: 'application/json' },
-        signal: controller.signal
+        signal: controller.signal,
       });
       const text = await response.text();
       const parsed = text ? (JSON.parse(text) as T) : null;
@@ -159,4 +202,3 @@ export class ResourceReadonlyAdapterService {
     return `http://${normalizedHost}:${port}`;
   }
 }
-
