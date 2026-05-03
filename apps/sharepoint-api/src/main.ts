@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { SharepointApiModule } from './sharepoint-api.module';
 
 
 async function bootstrap() {
   const app = await NestFactory.create(SharepointApiModule);
-  await app.listen(process.env.PORT ? Number(process.env.PORT) : 3003);
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('PORT') ?? 3003;
+  await app.listen(port);
 }
 bootstrap();

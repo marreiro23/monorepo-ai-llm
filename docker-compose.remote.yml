@@ -1,4 +1,22 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: monorepo-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-monorepo_ai_llm}
+      POSTGRES_USER: ${POSTGRES_USER:-monorepo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-monorepo123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-monorepo} -d ${POSTGRES_DB:-monorepo_ai_llm}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   monorepo-ai-llm:
     build:
       context: .
@@ -10,8 +28,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      DATABASE_URL: ${DATABASE_URL:-postgresql://monorepo:monorepo123@postgres:5432/monorepo_ai_llm}
     ports:
       - "${MONOREPO_AI_LLM_PORT:-3000}:3000"
+    depends_on:
+      - postgres
     restart: unless-stopped
     mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
     mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
@@ -28,8 +49,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
+      DATABASE_URL: ${DATABASE_URL:-postgresql://monorepo:monorepo123@postgres:5432/monorepo_ai_llm}
     ports:
       - "${USERS_API_PORT:-3001}:3001"
+    depends_on:
+      - postgres
     restart: unless-stopped
     mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
     mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
@@ -46,8 +70,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3002
+      DATABASE_URL: ${DATABASE_URL:-postgresql://monorepo:monorepo123@postgres:5432/monorepo_ai_llm}
     ports:
       - "${LLM_OPS_API_PORT:-3002}:3002"
+    depends_on:
+      - postgres
     restart: unless-stopped
     mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
     mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
@@ -64,8 +91,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3003
+      DATABASE_URL: ${DATABASE_URL:-postgresql://monorepo:monorepo123@postgres:5432/monorepo_ai_llm}
     ports:
       - "${SHAREPOINT_API_PORT:-3003}:3003"
+    depends_on:
+      - postgres
     restart: unless-stopped
     mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
     mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
@@ -82,9 +112,15 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3004
+      DATABASE_URL: ${DATABASE_URL:-postgresql://monorepo:monorepo123@postgres:5432/monorepo_ai_llm}
     ports:
       - "${SYNC_API_PORT:-3004}:3004"
+    depends_on:
+      - postgres
     restart: unless-stopped
     mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
     mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
     cpus: ${DEFAULT_CPU_LIMIT:-0.50}
+
+volumes:
+  postgres_data:
