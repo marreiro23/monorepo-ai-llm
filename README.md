@@ -118,3 +118,48 @@ Fluxo recomendado:
 2. Crie PR vinculando o issue.
 3. O GitHub Actions aplicara labels de area/tipo automaticamente com base nos arquivos alterados.
 4. Se atualizar `.github/labels.yml`, rode o workflow "Sync Labels" para alinhar labels do repositorio.
+
+## Regra obrigatoria para implementacao e migracao
+
+Todo processo de implementacao ou migracao de codigo deve incluir obrigatoriamente:
+
+1. Um arquivo Notebook (`.ipynb`) com o passo a passo tecnico.
+2. Um arquivo Markdown (`.md`) explicando como fazer, como testar e como executar.
+
+Sem esses dois artefatos, a entrega deve ser considerada incompleta.
+
+## Padrao de organizacao de artefatos
+
+Estrutura padrao para manter implementacoes, migracoes e evidencias:
+
+1. `spec/fases/` para planos e documentos `.md`.
+2. `spec/execucao/` para notebooks `.ipynb` de execucao e migracao.
+3. `spec/testes/` para notebooks de validacao e testes.
+4. `scripts/smoke-tests/` para scripts operacionais de smoke test.
+
+## Raiz obrigatoria do projeto
+
+O repositorio deve permanecer sob a raiz:
+
+`/mnt/repositorio/workdir/repostorios/<repositorio>`
+
+## MCP de organizacao
+
+Este projeto possui um MCP utilitario para padronizar arquivos e runbooks:
+
+1. `npm run mcp:org:check` valida a organizacao.
+2. `npm run mcp:org:fix` cria/move artefatos para os locais padrao.
+3. `npm run mcp:org:new-runbook` cria um par runbook (`.md` + `.ipynb`) padrao.
+4. `npm run mcp:org:check` tambem valida se cada celula de codigo dos runbooks comeca com:
+  - `# O que faz: ...`
+  - `# Onde executa: ...`
+
+Para criar runbook de uma operacao especifica:
+
+`node tools/mcp/project-artifacts-organizer.mjs --action=new-runbook --operation="nome-da-operacao"`
+
+Arquivos do MCP:
+
+- `tools/mcp/project-artifacts-organizer.mjs`
+- `spec/execucao/runbook-operacao-desenvolvimento.ipynb`
+- `spec/fases/runbook-operacao-desenvolvimento.md`
