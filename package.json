@@ -7,6 +7,11 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:monorepo-ai-llm": "nest build monorepo-ai-llm",
+    "build:users-api": "nest build users-api",
+    "build:llm-ops-api": "nest build llm-ops-api",
+    "build:sharepoint-api": "nest build sharepoint-api",
+    "build:sync-api": "nest build sync-api",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -17,7 +22,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/monorepo-ai-llm/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/monorepo-ai-llm/test/jest-e2e.json",
+    "docker:build:all": "docker compose -f docker-compose.remote.yml --env-file .env.remote.example build",
+    "docker:up:remote": "docker compose -f docker-compose.remote.yml --env-file .env.remote.example up -d",
+    "docker:down:remote": "docker compose -f docker-compose.remote.yml down",
+    "docker:logs:remote": "docker compose -f docker-compose.remote.yml logs -f --tail 200",
+    "docker:ps:remote": "docker compose -f docker-compose.remote.yml ps"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

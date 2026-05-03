@@ -1,0 +1,90 @@
+services:
+  monorepo-ai-llm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: monorepo-ai-llm
+    image: monorepo-ai-llm/monorepo-ai-llm:remote
+    container_name: monorepo-ai-llm
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "${MONOREPO_AI_LLM_PORT:-3000}:3000"
+    restart: unless-stopped
+    mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
+    cpus: ${DEFAULT_CPU_LIMIT:-0.50}
+
+  users-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: users-api
+    image: monorepo-ai-llm/users-api:remote
+    container_name: users-api
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+    ports:
+      - "${USERS_API_PORT:-3001}:3001"
+    restart: unless-stopped
+    mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
+    cpus: ${DEFAULT_CPU_LIMIT:-0.50}
+
+  llm-ops-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: llm-ops-api
+    image: monorepo-ai-llm/llm-ops-api:remote
+    container_name: llm-ops-api
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+    ports:
+      - "${LLM_OPS_API_PORT:-3002}:3002"
+    restart: unless-stopped
+    mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
+    cpus: ${DEFAULT_CPU_LIMIT:-0.50}
+
+  sharepoint-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: sharepoint-api
+    image: monorepo-ai-llm/sharepoint-api:remote
+    container_name: sharepoint-api
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+    ports:
+      - "${SHAREPOINT_API_PORT:-3003}:3003"
+    restart: unless-stopped
+    mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
+    cpus: ${DEFAULT_CPU_LIMIT:-0.50}
+
+  sync-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: sync-api
+    image: monorepo-ai-llm/sync-api:remote
+    container_name: sync-api
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+    ports:
+      - "${SYNC_API_PORT:-3004}:3004"
+    restart: unless-stopped
+    mem_limit: ${DEFAULT_MEMORY_LIMIT:-512m}
+    mem_reservation: ${DEFAULT_MEMORY_RESERVATION:-256m}
+    cpus: ${DEFAULT_CPU_LIMIT:-0.50}

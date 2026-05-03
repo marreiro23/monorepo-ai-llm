@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { SharepointApiController } from './sharepoint-api.controller';
+import { SharepointApiService } from './sharepoint-api.service';
 import { HealthController } from './health.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController, HealthController],
-  providers: [AppService],
+  controllers: [SharepointApiController, HealthController],
+  providers: [SharepointApiService],
 })
 export class AppModule {}
