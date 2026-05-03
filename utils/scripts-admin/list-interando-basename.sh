@@ -1,0 +1,1 @@
+d /mnt/repositorio/workdir/repostorios/monorepo/monorepo-ai-llm && cp -n .env.remote.example .env.remote || true && docker compose -f docker-compose.remote.yml --env-file .env.remote build
