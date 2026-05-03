@@ -1,0 +1,41 @@
+name: CI Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build users-api
+        run: npm run build:users-api
+
+      - name: Build monorepo-ai-llm
+        run: npm run build:monorepo-ai-llm
+
+      - name: Build llm-ops-api
+        run: npm run build:llm-ops-api
+
+      - name: Build sharepoint-api
+        run: npm run build:sharepoint-api
+
+      - name: Build sync-api
+        run: npm run build:sync-api
