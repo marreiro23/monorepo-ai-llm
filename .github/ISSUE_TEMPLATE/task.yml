@@ -1,0 +1,29 @@
+name: Task tecnica
+description: Tarefa tecnica de manutencao, melhoria ou automacao
+labels:
+  - type:chore
+body:
+  - type: input
+    id: scope
+    attributes:
+      label: Escopo
+      placeholder: docker | ci | docs | app especifico
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objetivo
+      description: O que precisa ser entregue
+    validations:
+      required: true
+  - type: textarea
+    id: checklist
+    attributes:
+      label: Checklist
+      placeholder: |
+        - [ ] passo 1
+        - [ ] passo 2
+        - [ ] validacao final
+    validations:
+      required: true

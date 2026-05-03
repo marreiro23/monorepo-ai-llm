@@ -1,0 +1,42 @@
+name: Bug report
+description: Reportar um problema encontrado no projeto
+labels:
+  - type:bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por abrir um issue. Preencha os campos para facilitar reproducao e correcao.
+  - type: input
+    id: app
+    attributes:
+      label: App afetado
+      description: Qual app foi impactado?
+      placeholder: users-api | llm-ops-api | sharepoint-api | sync-api | monorepo-ai-llm
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o comportamento observado e o esperado.
+      placeholder: Passos para reproduzir + comportamento atual + esperado
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs e evidencias
+      description: Cole logs, stacktrace, screenshots ou comando executado.
+      render: shell
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severidade
+      options:
+        - baixa
+        - media
+        - alta
+        - critica
+    validations:
+      required: true

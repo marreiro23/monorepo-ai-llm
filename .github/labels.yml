@@ -1,0 +1,59 @@
+- name: type:feature
+  color: 0e8a16
+  description: Nova funcionalidade
+
+- name: type:bug
+  color: d73a4a
+  description: Correcao de defeito
+
+- name: type:refactor
+  color: fbca04
+  description: Mudanca estrutural sem alterar comportamento esperado
+
+- name: type:docs
+  color: 0075ca
+  description: Alteracoes em documentacao e runbooks
+
+- name: type:chore
+  color: cfd3d7
+  description: Tarefa tecnica sem entrega funcional direta
+
+- name: type:test
+  color: 5319e7
+  description: Testes automatizados
+
+- name: pr:needs-review
+  color: fbca04
+  description: PR pronto para revisao
+
+- name: pr:blocked
+  color: b60205
+  description: PR bloqueado por dependencia ou pendencia
+
+- name: area:monorepo-ai-llm
+  color: 1d76db
+  description: App raiz
+
+- name: area:users-api
+  color: 0052cc
+  description: Servico users-api
+
+- name: area:llm-ops-api
+  color: 006b75
+  description: Servico llm-ops-api
+
+- name: area:sharepoint-api
+  color: 0b7285
+  description: Servico sharepoint-api
+
+- name: area:sync-api
+  color: 1f6feb
+  description: Servico sync-api
+
+- name: area:docker
+  color: 0366d6
+  description: Dockerfile, compose e ambiente remoto
+
+- name: area:spec
+  color: 5319e7
+  description: Artefatos de especificacao e notebooks

@@ -1,0 +1,36 @@
+name: Feature request
+description: Propor uma nova funcionalidade
+labels:
+  - type:feature
+body:
+  - type: input
+    id: app
+    attributes:
+      label: App alvo
+      placeholder: users-api | llm-ops-api | sharepoint-api | sync-api | monorepo-ai-llm
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema que queremos resolver
+      description: Contexto de negocio/tecnico da demanda
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta de solucao
+      description: Como voce imagina a implementacao
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceite
+      description: Liste criterios objetivos de pronto
+      placeholder: |
+        - criterio 1
+        - criterio 2
+    validations:
+      required: true

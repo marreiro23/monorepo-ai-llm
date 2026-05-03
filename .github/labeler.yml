@@ -1,0 +1,41 @@
+area:monorepo-ai-llm:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/monorepo-ai-llm/**'
+
+area:users-api:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/users-api/**'
+
+area:llm-ops-api:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/llm-ops-api/**'
+
+area:sharepoint-api:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/sharepoint-api/**'
+
+area:sync-api:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/sync-api/**'
+
+area:docker:
+  - changed-files:
+      - any-glob-to-any-file: 'Dockerfile'
+      - any-glob-to-any-file: 'docker-compose.remote.yml'
+      - any-glob-to-any-file: '.env.remote.example'
+      - any-glob-to-any-file: '.dockerignore'
+
+area:spec:
+  - changed-files:
+      - any-glob-to-any-file: 'spec/**'
+
+type:docs:
+  - changed-files:
+      - any-glob-to-any-file: 'README.md'
+      - any-glob-to-any-file: '*.md'
+      - any-glob-to-any-file: 'spec/**/*.md'
+
+type:test:
+  - changed-files:
+      - any-glob-to-any-file: '**/*.spec.ts'
+      - any-glob-to-any-file: 'apps/**/test/**'

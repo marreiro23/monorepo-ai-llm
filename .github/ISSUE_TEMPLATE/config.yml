@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Perguntas gerais
+    url: https://github.com/marreiro23/monorepo-ai-llm/discussions
+    about: Use Discussions para perguntas e ideias sem acao imediata

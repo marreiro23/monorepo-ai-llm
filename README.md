@@ -100,3 +100,21 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 ## Projeto MONOREPO
 
 - Sob controle PRs
+
+## Governanca de Issues e PRs
+
+Este repositorio possui configuracao padrao para abertura de issues e rotulacao de PRs:
+
+- Templates de issue em `.github/ISSUE_TEMPLATE/`
+- Template de PR em `.github/pull_request_template.md`
+- Catalogo de labels em `.github/labels.yml`
+- Auto-label por alteracao de arquivos em `.github/labeler.yml`
+- Workflow de auto-label para PRs em `.github/workflows/pr-labeler.yml`
+- Workflow de sincronizacao de labels em `.github/workflows/sync-labels.yml`
+
+Fluxo recomendado:
+
+1. Abra issue pelo template adequado.
+2. Crie PR vinculando o issue.
+3. O GitHub Actions aplicara labels de area/tipo automaticamente com base nos arquivos alterados.
+4. Se atualizar `.github/labels.yml`, rode o workflow "Sync Labels" para alinhar labels do repositorio.
