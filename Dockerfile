@@ -2,6 +2,8 @@ FROM node:22-bookworm-slim AS deps
 WORKDIR /app
 
 COPY package*.json ./
+COPY apps ./apps
+COPY packages ./packages
 RUN npm ci
 
 FROM deps AS build
@@ -11,15 +13,24 @@ COPY . .
 
 ARG APP_NAME=monorepo-ai-llm
 RUN npx nest build ${APP_NAME}
-RUN npm prune --omit=dev
+
+FROM node:22-bookworm-slim AS runtime-deps
+WORKDIR /app
+
+COPY package*.json ./
+COPY apps ./apps
+COPY packages ./packages
+
+ARG APP_NAME=monorepo-ai-llm
+RUN npm ci --omit=dev --workspace=apps/${APP_NAME} --include-workspace-root=false
 
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/node_modules ./node_modules
+COPY --from=runtime-deps /app/package*.json ./
+COPY --from=runtime-deps /app/node_modules ./node_modules
 
 ARG APP_NAME=monorepo-ai-llm
 ENV APP_NAME=${APP_NAME}

@@ -54,6 +54,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/users-api/tsconfig.app.json"
       }
+    },
+    "shared": {
+      "type": "library",
+      "root": "packages/shared",
+      "entryFile": "index",
+      "sourceRoot": "packages/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/shared/tsconfig.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "packages/auth",
+      "entryFile": "index",
+      "sourceRoot": "packages/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/auth/tsconfig.json"
+      }
     }
   }
 }

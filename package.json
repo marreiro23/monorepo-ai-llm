@@ -4,6 +4,10 @@
   "description": "",
   "author": "",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
@@ -34,13 +38,7 @@
     "docker:logs:remote": "docker compose -f docker-compose.remote.yml logs -f --tail 200",
     "docker:ps:remote": "docker compose -f docker-compose.remote.yml ps"
   },
-  "dependencies": {
-    "@nestjs/common": "^11.0.1",
-    "@nestjs/core": "^11.0.1",
-    "@nestjs/platform-express": "^11.0.1",
-    "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
@@ -63,7 +61,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.20.0"
   },
   "jest": {

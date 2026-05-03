@@ -3,7 +3,7 @@
 **Data de criação:** 2026-05-02  
 **Status:** Rascunho  
 **Origem:** `/mnt/repositorio/workdir/repostorios/api-llm-embedded`  
-**Destino:** `/mnt/repositorio/workdir/repostorios/monorepo/monorepo-ai-llm`
+**Destino:** `/mnt/repositorio/workdir/repostorios/monorepo-ai-llm`
 
 ---
 
@@ -13,8 +13,8 @@
 
 | Aspecto | api-llm-embedded (origem) | monorepo-ai-llm (destino) |
 |---|---|---|
-| **Build system** | npm workspaces + `tsgo` | NestJS CLI monorepo + webpack |
-| **TypeScript** | 6.0.3 (tsgo nativo) | 5.7.3 (ts-node) |
+| **Build system** | npm workspaces + `tsgo` | NestJS CLI monorepo + webpack + `tsgo` para checks TS |
+| **TypeScript** | 6.0.3 (tsgo nativo) | 5.7.3 com check/build TS via `tsgo` |
 | **Apps** | `apps/api` (monolito multi-domínio) | 5 NestJS apps independentes |
 | **Shared** | `packages/shared` (contratos) | Sem shared packages |
 | **MCP** | 5 servidores em `apps/svcia/` + `tools/` | MCP experimental em `tools/mcp/` |
@@ -28,6 +28,12 @@
 
 Migrar o código de produção do `api-llm-embedded` para o `monorepo-ai-llm`, adaptando a arquitetura de **monolito com domínios isolados** para **apps NestJS independentes** já definidos no monorepo de destino, mantendo todas as funcionalidades.
 
+### Objetivos não funcionais obrigatórios
+
+1. Cada app deve gerar e publicar **imagem mínima por serviço**, contendo apenas artefatos e dependências do domínio.
+2. Cada app deve instalar **somente pacotes necessários ao seu runtime** (instalação por workspace).
+3. A autenticação/autorização deve ser **transversal e consistente** em todo o projeto (Entra ID + API Keys + guards compartilhados).
+
 ---
 
 ## 2. Decisão Arquitetural
@@ -40,7 +46,13 @@ O `monorepo-ai-llm` usa NestJS CLI monorepo mode com 5 apps separadas. A migraç
 - **TypeORM** por app (cada app com seu próprio schema)
 - **Infra comum** extraída para `packages/` (guards, interceptors, filters, decorators)
 - **apps/svcia/*** para os servidores MCP (mesma estrutura do projeto origem)
-- **TypeScript 5.7.3** mantido (sem tsgo, que é experimental)
+- **TypeScript 5.7.3** mantido com validação/check via `tsgo` (sem uso de `tsc` para type-check)
+
+### Guardrails obrigatórios de boundary
+
+- Sem import cruzado entre domínios (`apps/*`) exceto via `packages/shared` e `packages/infra`.
+- `packages/infra` não pode depender de módulos de domínio.
+- Docker runtime deve copiar apenas `dist/apps/<APP_NAME>` e dependências do app alvo.
 
 ### Mapeamento de Domínios
 
@@ -171,18 +183,70 @@ Adicionar path aliases:
 }
 ```
 
-#### 1.5 Adicionar dependências base ao root package.json
+#### 1.5 Estratégia de dependências por app (workspace-first)
+
+Regra: evitar concentrar dependências de runtime no root. Instalar por app/workspace.
 
 ```bash
-npm install @nestjs/typeorm typeorm pg zod @nestjs/swagger swagger-ui-express \
-  @nestjs/config class-validator class-transformer
-npm install --save-dev @types/pg
+# users-api
+npm install -w apps/users-api @nestjs/typeorm typeorm pg @nestjs/config class-validator class-transformer @nestjs/swagger swagger-ui-express
+
+# llm-ops-api
+npm install -w apps/llm-ops-api @nestjs/typeorm typeorm pg @nestjs/config class-validator class-transformer @nestjs/swagger swagger-ui-express
+
+# sharepoint-api (stateless, sem typeorm)
+npm install -w apps/sharepoint-api @nestjs/config class-validator class-transformer @nestjs/swagger swagger-ui-express
+
+# sync-api
+npm install -w apps/sync-api @nestjs/typeorm typeorm pg @nestjs/config class-validator class-transformer @nestjs/swagger swagger-ui-express
+
+# tipagens apenas onde necessário
+npm install -D -w apps/users-api @types/pg
+npm install -D -w apps/llm-ops-api @types/pg
+npm install -D -w apps/sync-api @types/pg
 ```
 
 #### Critério de aceite
 - [ ] `npm install` sem erros
 - [ ] `packages/shared` e `packages/infra` importáveis via alias
 - [ ] `npm run build:users-api` ainda compila (regressão zero)
+- [ ] `npm ls --workspaces --depth=0` evidencia dependências por app sem inflar root
+
+---
+
+### Fase 1.6 — Auth transversal (obrigatória)
+
+**Duração estimada:** 1 dia  
+**Depende de:** Fase 1
+
+#### 1.6.1 Criar `packages/auth` compartilhado
+
+Estrutura sugerida:
+
+```
+packages/auth/src/
+├── auth.module.ts
+├── guards/
+│   ├── entra-jwt.guard.ts
+│   ├── api-key.guard.ts
+│   └── permission.guard.ts
+├── decorators/
+│   ├── current-user.decorator.ts
+│   └── require-permissions.decorator.ts
+└── strategies/
+  ├── entra-jwt.strategy.ts
+  └── api-key.strategy.ts
+```
+
+#### 1.6.2 Aplicar AuthModule em todas as apps HTTP
+
+- `users-api`, `llm-ops-api`, `sharepoint-api`, `sync-api` devem importar `AuthModule`.
+- Configurar `APP_GUARD` global e regras de exceção apenas para `health` e docs públicas quando necessário.
+
+#### Critério de aceite
+- [ ] Todas as APIs (exceto health/docs permitidas) exigem autenticação.
+- [ ] Fluxo Entra ID validado em pelo menos um endpoint por app.
+- [ ] Fluxo API Key validado para rotas de integração/automação.
 
 ---
 
@@ -544,8 +608,8 @@ Criar `CLAUDE.md` no root do monorepo baseado no `api-llm-embedded/CLAUDE.md`, a
 # Build completo
 npm run build
 
-# Type check
-npx tsc --noEmit
+# Type check (padrao do projeto)
+npm run type-check
 
 # Lint
 npm run lint
@@ -563,10 +627,12 @@ docker compose build
 
 #### Critério de aceite final
 - [ ] `npm run build` limpo (todos os 5 apps + svcia + packages)
-- [ ] `npx tsc --noEmit` sem erros
+- [ ] `npm run type-check` sem erros
 - [ ] Todos os smoke tests passando com PostgreSQL
 - [ ] Todos os MCP servers respondendo via stdio
 - [ ] Docker build sem erros para todos os serviços
+- [ ] Imagem de cada serviço contem apenas `dist/apps/<app>` + dependencias de runtime do app
+- [ ] Endpoints protegidos por autenticação transversal conforme politica definida
 
 ---
 
