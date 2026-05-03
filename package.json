@@ -39,7 +39,9 @@
     "docker:ps:remote": "docker compose -f docker-compose.remote.yml ps"
   },
   "dependencies": {
+    "@datastax/astra-db-ts": "^2.2.1",
     "@nestjs/config": "^4.0.4",
+    "@nestjs/event-emitter": "^3.1.0",
     "@nestjs/typeorm": "^11.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
